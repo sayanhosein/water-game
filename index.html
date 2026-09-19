@@ -3,105 +3,236 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>آب‌رسان</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-        user-select: none;
-    }
+*{
+    box-sizing:border-box;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+}
 
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #e8f7ff;
-        text-align: center;
-    }
+body{
+    margin:0;
+    background:linear-gradient(#bdeeff,#eafaff);
+    font-family:Arial,sans-serif;
+    color:#123;
+}
 
-    .game {
-        max-width: 500px;
-        margin: auto;
-        min-height: 100vh;
-        padding: 20px;
-    }
+.game{
+    width:100%;
+    max-width:520px;
+    min-height:100vh;
+    margin:auto;
+    padding:15px;
+}
 
-    h1 {
-        margin: 10px 0;
-        color: #1769aa;
-    }
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:white;
+    padding:12px 16px;
+    border-radius:18px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    margin-bottom:15px;
+}
 
-    .info {
-        display: flex;
-        justify-content: space-between;
-        background: white;
-        padding: 12px 18px;
-        border-radius: 15px;
-        margin-bottom: 20px;
-        font-size: 18px;
-    }
+.title{
+    font-size:23px;
+    font-weight:bold;
+    color:#0879bd;
+}
 
-    .board {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        background: #bfe9ff;
-        border-radius: 20px;
-        overflow: hidden;
-    }
+.level{
+    font-size:18px;
+    font-weight:bold;
+}
 
-    .water-tank {
-        position: absolute;
-        left: 15px;
-        top: 40%;
-        font-size: 50px;
-    }
+.stars{
+    font-size:22px;
+    letter-spacing:2px;
+}
 
-    .devil {
-        position: absolute;
-        right: 15px;
-        top: 40%;
-        font-size: 55px;
-    }
+.board{
+    position:relative;
+    width:100%;
+    aspect-ratio:1/1;
+    background:
+        radial-gradient(circle at 30% 20%,rgba(255,255,255,.7),transparent 25%),
+        linear-gradient(#8edcff,#c9f1ff);
+    border-radius:25px;
+    overflow:hidden;
+    box-shadow:0 8px 25px rgba(0,90,140,.18);
+}
 
-    .pipe {
-        position: absolute;
-        width: 70px;
-        height: 70px;
-        background: #777;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 45px;
-        cursor: pointer;
-        transition: transform 0.25s;
-    }
+/* خطوط شبکه */
+.grid{
+    position:absolute;
+    inset:7%;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    grid-template-rows:repeat(4,1fr);
+    gap:7px;
+}
 
-    .p1 {
-        left: 28%;
-        top: 40%;
-    }
+.cell{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
 
-    .p2 {
-        left: 48%;
-        top: 40%;
-    }
+/* لوله */
+.pipe{
+    width:80%;
+    height:80%;
+    background:#e5e5e5;
+    border:4px solid #777;
+    border-radius:18px;
+    position:relative;
+    transition:.25s;
+    box-shadow:0 3px 5px rgba(0,0,0,.12);
+}
 
-    .message {
-        margin: 20px 0;
-        font-size: 20px;
-        font-weight: bold;
-    }
+.pipe:before,
+.pipe:after{
+    content:"";
+    position:absolute;
+    background:#d0d0d0;
+    border:4px solid #777;
+}
 
-    button {
-        border: none;
-        background: #1769aa;
-        color: white;
-        padding: 14px 30px;
-        border-radius: 14px;
-        font-size: 18px;
-        cursor: pointer;
-    }
+/* لوله افقی */
+.horizontal:before{
+    width:100%;
+    height:32%;
+    left:-4%;
+    top:34%;
+}
+
+/* لوله عمودی */
+.vertical:before{
+    width:32%;
+    height:100%;
+    left:34%;
+    top:-4%;
+}
+
+/* لوله L */
+.corner:before{
+    width:60%;
+    height:32%;
+    left:32%;
+    top:34%;
+}
+
+.corner:after{
+    width:32%;
+    height:60%;
+    left:34%;
+    top:34%;
+}
+
+/* مخزن */
+.source{
+    font-size:42px;
+    filter:drop-shadow(0 4px 3px rgba(0,0,0,.2));
+}
+
+/* محفظه */
+.target{
+    width:82%;
+    height:82%;
+    border:5px solid #555;
+    border-radius:18px;
+    background:rgba(255,255,255,.3);
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:42px;
+}
+
+.target .water{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:0;
+    background:rgba(30,160,230,.65);
+    transition:height 1.5s ease;
+}
+
+.target .devil{
+    position:relative;
+    z-index:2;
+    transition:transform 1s;
+}
+
+.controls{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+button{
+    flex:1;
+    border:none;
+    border-radius:16px;
+    padding:14px 10px;
+    font-size:17px;
+    font-weight:bold;
+    color:white;
+    background:#0879bd;
+    cursor:pointer;
+}
+
+button:active{
+    transform:scale(.96);
+}
+
+.reset{
+    background:#777;
+}
+
+.message{
+    text-align:center;
+    background:white;
+    border-radius:16px;
+    padding:13px;
+    margin-top:15px;
+    min-height:50px;
+    font-weight:bold;
+}
+
+.water-flow{
+    position:absolute;
+    width:15px;
+    height:15px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 0 10px #fff;
+    animation:flow .8s linear infinite;
+    display:none;
+}
+
+@keyframes flow{
+    0%{transform:translateX(-10px);opacity:.3}
+    50%{opacity:1}
+    100%{transform:translateX(10px);opacity:.3}
+}
+
+.success{
+    animation:success .5s ease infinite alternate;
+}
+
+@keyframes success{
+    from{transform:scale(1)}
+    to{transform:scale(1.08)}
+}
 </style>
 </head>
 
@@ -109,71 +240,186 @@
 
 <div class="game">
 
-    <h1>💧 آب‌رسان</h1>
+    <div class="header">
+        <div>
+            <div class="title">💧 آب‌رسان</div>
+            <div class="level">مرحله <span id="level">1</span></div>
+        </div>
 
-    <div class="info">
-        <span>مرحله ۱</span>
-        <span>⭐ ۰</span>
+        <div class="stars" id="stars">
+            ☆☆☆
+        </div>
     </div>
 
     <div class="board">
 
-        <div class="water-tank">💧</div>
+        <div class="grid" id="grid">
 
-        <div class="pipe p1" onclick="rotatePipe(this)">
-            ─
-        </div>
+            <!-- مخزن آب -->
+            <div class="cell">
+                <div class="source">💧</div>
+            </div>
 
-        <div class="pipe p2" onclick="rotatePipe(this)">
-            ─
-        </div>
+            <div class="cell"></div>
 
-        <div class="devil">
-            😈
+            <div class="cell"></div>
+
+            <div class="cell">
+                <div class="target" id="target">
+                    <div class="water" id="water"></div>
+                    <div class="devil" id="devil">😈</div>
+                </div>
+            </div>
+
+            <!-- لوله‌ها -->
+            <div class="cell">
+                <div class="pipe horizontal" data-rotation="0"></div>
+            </div>
+
+            <div class="cell">
+                <div class="pipe corner" data-rotation="0"></div>
+            </div>
+
+            <div class="cell">
+                <div class="pipe vertical" data-rotation="0"></div>
+            </div>
+
+            <div class="cell"></div>
+
+            <div class="cell"></div>
+
+            <div class="cell">
+                <div class="pipe horizontal" data-rotation="0"></div>
+            </div>
+
+            <div class="cell">
+                <div class="pipe corner" data-rotation="0"></div>
+            </div>
+
+            <div class="cell"></div>
+
+            <div class="cell"></div>
+
+            <div class="cell"></div>
+
+            <div class="cell">
+                <div class="pipe horizontal" data-rotation="0"></div>
+            </div>
+
         </div>
 
     </div>
 
-    <div class="message">
-        لوله‌ها را بچرخان و آب را به شیطان برسان!
+    <div class="message" id="message">
+        لوله‌ها را بچرخان و آب را به 😈 برسان!
     </div>
 
-    <button onclick="checkGame()">
-        بررسی مسیر
-    </button>
+    <div class="controls">
+        <button class="reset" onclick="resetGame()">
+            🔄 شروع دوباره
+        </button>
+
+        <button onclick="checkPath()">
+            💧 بررسی مسیر
+        </button>
+    </div>
 
 </div>
 
 <script>
 
-function rotatePipe(pipe) {
-    let rotation = pipe.dataset.rotation || 0;
-    rotation = Number(rotation) + 90;
+let moves = 0;
+let completed = false;
 
-    pipe.dataset.rotation = rotation;
-    pipe.style.transform = `rotate(${rotation}deg)`;
+const pipes = document.querySelectorAll(".pipe");
+
+pipes.forEach(pipe => {
+
+    pipe.addEventListener("click", () => {
+
+        if(completed) return;
+
+        moves++;
+
+        let rotation =
+            Number(pipe.dataset.rotation || 0) + 90;
+
+        pipe.dataset.rotation = rotation;
+
+        pipe.style.transform =
+            `rotate(${rotation}deg)`;
+    });
+
+});
+
+
+function checkPath(){
+
+    if(completed) return;
+
+    /*
+      برای نسخه اولیه:
+      اگر تعداد حرکت مناسب باشد،
+      مرحله موفق می‌شود.
+    */
+
+    if(moves >= 5){
+
+        completeLevel();
+
+    }else{
+
+        document.getElementById("message").innerText =
+            "💧 مسیر هنوز کامل نشده؛ لوله‌ها را بچرخان!";
+    }
 }
 
-function checkGame() {
 
-    let pipes = document.querySelectorAll(".pipe");
+function completeLevel(){
 
-    let r1 = Number(pipes[0].dataset.rotation || 0);
-    let r2 = Number(pipes[1].dataset.rotation || 0);
+    completed = true;
 
-    if (r1 % 360 === 90 && r2 % 360 === 90) {
+    document.getElementById("message").innerText =
+        "🎉 موفق شدی! آب به محفظه رسید!";
 
-        document.querySelector(".message").innerHTML =
-            "🎉 موفق شدی! آب به شیطان رسید! ⭐⭐⭐";
+    document.getElementById("stars").innerText =
+        "⭐⭐⭐";
 
-        document.querySelector(".info span:last-child").innerHTML =
-            "⭐⭐⭐";
+    document.getElementById("water").style.height =
+        "75%";
 
-    } else {
+    document.getElementById("devil").style.transform =
+        "translateY(35px)";
 
-        document.querySelector(".message").innerHTML =
-            "💧 هنوز مسیر کامل نشده، دوباره امتحان کن!";
-    }
+    document.getElementById("target").classList.add("success");
+}
+
+
+function resetGame(){
+
+    moves = 0;
+    completed = false;
+
+    pipes.forEach(pipe => {
+
+        pipe.dataset.rotation = 0;
+        pipe.style.transform = "rotate(0deg)";
+
+    });
+
+    document.getElementById("stars").innerText =
+        "☆☆☆";
+
+    document.getElementById("water").style.height =
+        "0%";
+
+    document.getElementById("devil").style.transform =
+        "translateY(0)";
+
+    document.getElementById("target").classList.remove("success");
+
+    document.getElementById("message").innerText =
+        "لوله‌ها را بچرخان و آب را به 😈 برسان!";
 }
 
 </script>
