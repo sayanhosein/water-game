@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>آب‌رسان</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        user-select: none;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #e8f7ff;
+        text-align: center;
+    }
+
+    .game {
+        max-width: 500px;
+        margin: auto;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    h1 {
+        margin: 10px 0;
+        color: #1769aa;
+    }
+
+    .info {
+        display: flex;
+        justify-content: space-between;
+        background: white;
+        padding: 12px 18px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+
+    .board {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: #bfe9ff;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .water-tank {
+        position: absolute;
+        left: 15px;
+        top: 40%;
+        font-size: 50px;
+    }
+
+    .devil {
+        position: absolute;
+        right: 15px;
+        top: 40%;
+        font-size: 55px;
+    }
+
+    .pipe {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        background: #777;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 45px;
+        cursor: pointer;
+        transition: transform 0.25s;
+    }
+
+    .p1 {
+        left: 28%;
+        top: 40%;
+    }
+
+    .p2 {
+        left: 48%;
+        top: 40%;
+    }
+
+    .message {
+        margin: 20px 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    button {
+        border: none;
+        background: #1769aa;
+        color: white;
+        padding: 14px 30px;
+        border-radius: 14px;
+        font-size: 18px;
+        cursor: pointer;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>💧 آب‌رسان</h1>
+
+    <div class="info">
+        <span>مرحله ۱</span>
+        <span>⭐ ۰</span>
+    </div>
+
+    <div class="board">
+
+        <div class="water-tank">💧</div>
+
+        <div class="pipe p1" onclick="rotatePipe(this)">
+            ─
+        </div>
+
+        <div class="pipe p2" onclick="rotatePipe(this)">
+            ─
+        </div>
+
+        <div class="devil">
+            😈
+        </div>
+
+    </div>
+
+    <div class="message">
+        لوله‌ها را بچرخان و آب را به شیطان برسان!
+    </div>
+
+    <button onclick="checkGame()">
+        بررسی مسیر
+    </button>
+
+</div>
+
+<script>
+
+function rotatePipe(pipe) {
+    let rotation = pipe.dataset.rotation || 0;
+    rotation = Number(rotation) + 90;
+
+    pipe.dataset.rotation = rotation;
+    pipe.style.transform = `rotate(${rotation}deg)`;
+}
+
+function checkGame() {
+
+    let pipes = document.querySelectorAll(".pipe");
+
+    let r1 = Number(pipes[0].dataset.rotation || 0);
+    let r2 = Number(pipes[1].dataset.rotation || 0);
+
+    if (r1 % 360 === 90 && r2 % 360 === 90) {
+
+        document.querySelector(".message").innerHTML =
+            "🎉 موفق شدی! آب به شیطان رسید! ⭐⭐⭐";
+
+        document.querySelector(".info span:last-child").innerHTML =
+            "⭐⭐⭐";
+
+    } else {
+
+        document.querySelector(".message").innerHTML =
+            "💧 هنوز مسیر کامل نشده، دوباره امتحان کن!";
+    }
+}
+
+</script>
+
+</body>
+</html>
