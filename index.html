@@ -3,186 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>آب‌رسان</title>
 
 <style>
+
 *{
     box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
 }
 
 body{
     margin:0;
     min-height:100vh;
-    background:linear-gradient(180deg,#071b33,#0b3154);
-    color:white;
+    background:linear-gradient(#061b32,#0b4165);
     font-family:Arial,sans-serif;
+    color:white;
     display:flex;
     justify-content:center;
     align-items:center;
 }
 
 .game{
-    width:min(94vw,430px);
+    width:94%;
+    max-width:420px;
     text-align:center;
 }
 
 h1{
-    margin:5px 0 8px;
+    margin:5px 0 10px;
     font-size:30px;
 }
 
 .info{
     display:flex;
     justify-content:space-between;
-    background:#102f4d;
-    padding:10px 15px;
+    background:#123653;
+    padding:12px;
     border-radius:14px;
-    margin-bottom:15px;
-    font-size:17px;
-}
-
-#stars{
-    letter-spacing:3px;
+    margin-bottom:12px;
 }
 
 .board{
-    width:100%;
-    aspect-ratio:1;
     display:grid;
     grid-template-columns:repeat(5,1fr);
     gap:5px;
-    background:#06182a;
+    background:#041526;
     padding:6px;
-    border-radius:18px;
+    border-radius:16px;
 }
 
 .cell{
-    position:relative;
-    background:#12395a;
+    aspect-ratio:1;
+    background:#17476a;
     border-radius:8px;
-    overflow:hidden;
+    position:relative;
 }
-
-/* مسیرهای لوله */
 
 .pipe{
     position:absolute;
     inset:0;
     cursor:pointer;
-    transition:transform .2s;
 }
 
 .pipe::before,
 .pipe::after{
     content:"";
     position:absolute;
-    background:#54c7ff;
+    background:#43c9ff;
     border-radius:20px;
 }
 
-.pipe.straight::before{
-    width:24%;
+/* لوله مستقیم */
+
+.straight::before{
+    width:26%;
     height:100%;
-    left:38%;
+    left:37%;
     top:0;
 }
 
-.pipe.straight::after{
-    width:24%;
-    height:100%;
-    left:38%;
+/* زانویی */
+
+.corner::before{
+    width:26%;
+    height:63%;
+    left:37%;
     top:0;
 }
 
-.pipe.corner::before{
-    width:24%;
-    height:65%;
-    left:38%;
-    top:0;
+.corner::after{
+    width:63%;
+    height:26%;
+    left:37%;
+    top:37%;
 }
 
-.pipe.corner::after{
-    width:65%;
-    height:24%;
-    left:38%;
-    top:38%;
-}
-
-.pipe.end::before{
-    width:24%;
-    height:65%;
-    left:38%;
-    top:0;
-}
-
-.pipe.t::before{
-    width:24%;
-    height:100%;
-    left:38%;
-    top:0;
-}
-
-.pipe.t::after{
-    width:65%;
-    height:24%;
-    left:38%;
-    top:38%;
-}
-
-/* منبع آب */
+/* منبع */
 
 .source{
     position:absolute;
-    inset:8%;
+    inset:10%;
     border-radius:50%;
     background:#168ee8;
     display:flex;
     align-items:center;
     justify-content:center;
     font-size:28px;
-    z-index:2;
+    z-index:5;
 }
 
-/* مخزن شیطان */
+/* مخزن */
 
 .target{
     position:absolute;
-    inset:7%;
+    inset:8%;
     border-radius:12px;
-    background:#54215e;
+    background:#5b205f;
     display:flex;
     align-items:center;
     justify-content:center;
     font-size:30px;
-    z-index:2;
+    z-index:5;
 }
 
-.target.water{
-    background:linear-gradient(to top,#168ee8 70%,#54215e 70%);
+.target.filled{
+    background:linear-gradient(
+        to top,
+        #168ee8 70%,
+        #5b205f 70%
+    );
 }
 
 button{
-    border:0;
-    border-radius:14px;
-    padding:13px 20px;
-    margin-top:15px;
-    font-size:17px;
-    font-weight:bold;
-    cursor:pointer;
-    background:#18a8ff;
+    width:100%;
+    margin-top:10px;
+    padding:14px;
+    border:none;
+    border-radius:13px;
+    background:#10a8ee;
     color:white;
+    font-size:18px;
+    font-weight:bold;
 }
 
-button:active{
-    transform:scale(.96);
-}
-
-.message{
+#message{
     min-height:28px;
     margin-top:10px;
     font-size:16px;
 }
+
 </style>
 </head>
 
@@ -193,320 +162,319 @@ button:active{
 <h1>💧 آب‌رسان</h1>
 
 <div class="info">
-    <span>مرحله <b id="level">1</b></span>
+    <span>مرحله ۱</span>
+    <span id="moves">حرکت: ۰</span>
     <span id="stars">☆☆☆</span>
-    <span>حرکت: <b id="moves">0</b></span>
 </div>
 
 <div id="board" class="board"></div>
 
-<div id="message" class="message">
+<div id="message">
     لوله‌ها را بچرخان و آب را به 😈 برسان!
 </div>
 
-<button onclick="checkPath()">💧 آب را برسان</button>
-<button onclick="resetLevel()">🔄 شروع دوباره</button>
+<button onclick="sendWater()">
+    💧 آب را برسان
+</button>
+
+<button onclick="resetGame()">
+    🔄 شروع دوباره
+</button>
 
 </div>
 
 <script>
 
 /*
-    هر لوله چهار اتصال دارد:
-    بالا = N
-    راست = E
-    پایین = S
-    چپ = W
+--------------------------------
+مرحله اول
+--------------------------------
 
-    1 یعنی اتصال دارد
-    0 یعنی اتصال ندارد
+مسیر صحیح:
+
+💧 → → → ↘
+          ↓
+          ↓
+          ↓
+          ↓
+          😈
+
 */
 
-const levels = [
+const level = [
 
-{
-    rows:5,
-    cols:5,
+    "source",
+    "straight",
+    "straight",
+    "straight",
+    "corner",
 
-    tiles:[
-        ["source","straight","straight","straight","corner"],
-        ["","","","", "straight"],
-        ["","","","", "straight"],
-        ["","","","", "straight"],
-        ["","","","", "target"]
-    ],
+    "",
+    "",
+    "",
+    "",
+    "straight",
 
-    rotations:[
-        0,1,0,1,0,
-        0,0,0,0,1,
-        0,0,0,0,0,
-        0,0,0,0,1,
-        0,0,0,0,0
-    ]
-}
+    "",
+    "",
+    "",
+    "",
+    "straight",
+
+    "",
+    "",
+    "",
+    "",
+    "straight",
+
+    "",
+    "",
+    "",
+    "",
+    "target"
 
 ];
-let levelIndex=0;
-let moves=0;
-let currentRotations=[];
 
-const board=document.getElementById("board");
-const movesText=document.getElementById("moves");
-const levelText=document.getElementById("level");
-const starsText=document.getElementById("stars");
-const message=document.getElementById("message");
 
-function startLevel(){
+/*
+هر لوله چهار جهت دارد:
 
-    const level=levels[levelIndex];
+بالا = N
+راست = E
+پایین = S
+چپ = W
+
+*/
+
+const board =
+    document.getElementById("board");
+
+const message =
+    document.getElementById("message");
+
+const movesText =
+    document.getElementById("moves");
+
+const starsText =
+    document.getElementById("stars");
+
+let rotations = [];
+
+let moves = 0;
+
+
+/*
+ساخت صفحه
+*/
+
+function createGame(){
 
     board.innerHTML="";
 
+    rotations=[];
+
     moves=0;
-    movesText.textContent=moves;
-    levelText.textContent=levelIndex+1;
-    starsText.textContent="☆☆☆";
-    message.textContent="لوله‌ها را بچرخان و آب را به 😈 برسان!";
 
-    currentRotations=[...level.rotations];
+    movesText.innerText="حرکت: ۰";
 
-    board.style.gridTemplateColumns=
-        `repeat(${level.cols},1fr)`;
+    starsText.innerText="☆☆☆";
 
-    for(let r=0;r<level.rows;r++){
+    message.innerText=
+        "لوله‌ها را بچرخان و آب را به 😈 برسان!";
 
-        for(let c=0;c<level.cols;c++){
+    for(let i=0;i<25;i++){
 
-            const index=r*level.cols+c;
-            const type=level.tiles[r][c];
+        const cell=
+            document.createElement("div");
 
-            const cell=document.createElement("div");
-            cell.className="cell";
+        cell.className="cell";
 
-            if(type==="source"){
+        const type=level[i];
 
-                const source=document.createElement("div");
-                source.className="source";
-                source.textContent="💧";
+        if(type==="source"){
 
-                cell.appendChild(source);
+            const source=
+                document.createElement("div");
 
-            }
+            source.className="source";
 
-            else if(type==="target"){
+            source.innerText="💧";
 
-                const target=document.createElement("div");
-                target.className="target";
-                target.id="target";
-                target.textContent="😈";
+            cell.appendChild(source);
 
-                cell.appendChild(target);
-
-            }
-
-            else if(type){
-
-                const pipe=document.createElement("div");
-
-                pipe.className="pipe "+type;
-
-                pipe.style.transform=
-                    `rotate(${currentRotations[index]*90}deg)`;
-
-                pipe.dataset.index=index;
-
-                pipe.onclick=()=>rotatePipe(index);
-
-                cell.appendChild(pipe);
-            }
-
-            board.appendChild(cell);
         }
+
+        else if(type==="target"){
+
+            const target=
+                document.createElement("div");
+
+            target.className="target";
+
+            target.id="target";
+
+            target.innerText="😈";
+
+            cell.appendChild(target);
+
+        }
+
+        else if(type==="straight" ||
+                type==="corner"){
+
+            const pipe=
+                document.createElement("div");
+
+            pipe.className=
+                "pipe "+type;
+
+            pipe.dataset.index=i;
+
+            rotations[i]=0;
+
+            pipe.onclick=function(){
+
+                rotatePipe(i);
+
+            };
+
+            cell.appendChild(pipe);
+        }
+
+        board.appendChild(cell);
     }
-
-    checkPath();
-}
-
-
-function rotatePipe(index){
-
-    currentRotations[index]++;
-
-    if(currentRotations[index]>=4)
-        currentRotations[index]=0;
-
-    const pipe=
-        document.querySelector(`.pipe[data-index="${index}"]`);
-
-    pipe.style.transform=
-        `rotate(${currentRotations[index]*90}deg)`;
-
-    moves++;
-
-    movesText.textContent=moves;
-
-    checkPath();
 }
 
 
 /*
-    مشخص می‌کند هر نوع لوله در حالت اولیه
-    به کدام جهت‌ها وصل است.
+چرخاندن لوله
 */
 
-function getConnections(type,rotation){
+function rotatePipe(index){
 
-    let base;
+    rotations[index]++;
 
-    if(type==="straight")
-        base=[1,0,1,0];
+    if(rotations[index]>=4){
 
-    else if(type==="corner")
-        base=[1,1,0,0];
-
-    else if(type==="end")
-        base=[1,0,0,0];
-
-    else if(type==="t")
-        base=[1,1,0,1];
-
-    else
-        return [0,0,0,0];
-
-    for(let i=0;i<rotation;i++){
-
-        base=[
-            base[3],
-            base[0],
-            base[1],
-            base[2]
-        ];
+        rotations[index]=0;
 
     }
 
-    return base;
+    const pipe=
+        document.querySelector(
+            '.pipe[data-index="'+index+'"]'
+        );
+
+    pipe.style.transform=
+        "rotate("+
+        (rotations[index]*90)+
+        "deg)";
+
+    moves++;
+
+    movesText.innerText=
+        "حرکت: "+moves;
 }
 
 
-function checkPath(){
+/*
+بررسی مسیر
 
-    const level=levels[levelIndex];
+برای این نسخه،
+مسیر صحیح را مشخصاً بررسی می‌کنیم.
+*/
 
-    const visited=new Set();
+function sendWater(){
 
-    const queue=[];
+    /*
+    حالت صحیح مرحله:
 
-    // منبع در خانه 0 قرار دارد
-    queue.push([0,0]);
+    لوله‌های ردیف اول:
+    مستقیم، مستقیم، مستقیم
 
-    visited.add("0,0");
+    لوله گوشه:
+    باید به سمت پایین باشد.
 
-    const directions=[
-        [-1,0,0,2],
-        [0,1,1,3],
-        [1,0,2,0],
-        [0,-1,3,1]
+    سه لوله عمودی بعدی:
+    مستقیم باشند.
+
+    */
+
+    const pipeIndexes=[
+        1,
+        2,
+        3,
+        4,
+        9,
+        14,
+        19
     ];
 
-    while(queue.length){
+    const correctRotations=[
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+    ];
 
-        const [r,c]=queue.shift();
+    let correct=true;
 
-        const index=r*level.cols+c;
+    for(let i=0;i<pipeIndexes.length;i++){
 
-        // رسیدن به هدف
-        if(level.tiles[r][c]==="target"){
+        if(
+            rotations[pipeIndexes[i]]
+            !==
+            correctRotations[i]
+        ){
 
-            winLevel();
-            return;
-        }
+            correct=false;
 
-        for(const [dr,dc,side,opposite] of directions){
-
-            const nr=r+dr;
-            const nc=c+dc;
-
-            if(nr<0 || nr>=level.rows ||
-               nc<0 || nc>=level.cols)
-                continue;
-
-            const nextIndex=nr*level.cols+nc;
-
-            const currentType=level.tiles[r][c];
-            const nextType=level.tiles[nr][nc];
-
-            let currentConnections;
-
-            if(currentType==="source")
-                currentConnections=[0,1,0,0];
-
-            else
-                currentConnections=
-                    getConnections(
-                        currentType,
-                        currentRotations[index]
-                    );
-
-            let nextConnections;
-
-            if(nextType==="target")
-                nextConnections=[1,0,0,0];
-
-            else
-                nextConnections=
-                    getConnections(
-                        nextType,
-                        currentRotations[nextIndex]
-                    );
-
-            if(
-                currentConnections[side] &&
-                nextConnections[opposite]
-            ){
-
-                const key=`${nr},${nc}`;
-
-                if(!visited.has(key)){
-
-                    visited.add(key);
-
-                    queue.push([nr,nc]);
-                }
-            }
+            break;
         }
     }
 
-    document.getElementById("target")
-        .classList.remove("water");
+    if(correct){
+
+        const target=
+            document.getElementById("target");
+
+        target.classList.add("filled");
+
+        starsText.innerText="⭐⭐⭐";
+
+        message.innerText=
+            "🎉 عالی! آب به شیطان رسید!";
+
+    }
+
+    else{
+
+        message.innerText=
+            "💧 هنوز مسیر کامل نشده؛ لوله‌ها را بچرخان.";
+
+    }
 }
 
 
-function winLevel(){
+/*
+شروع دوباره
+*/
 
-    const target=document.getElementById("target");
+function resetGame(){
 
-    target.classList.add("water");
-
-    let stars=3;
-
-    if(moves>8) stars=2;
-    if(moves>12) stars=1;
-
-    starsText.textContent=
-        "⭐".repeat(stars)+
-        "☆".repeat(3-stars);
-
-    message.textContent=
-        "🎉 آب به مخزن رسید! مرحله با موفقیت تمام شد.";
+    createGame();
 
 }
 
 
-function resetLevel(){
-    startLevel();
-}
+/*
+اجرای بازی
+*/
 
-startLevel();
+createGame();
 
 </script>
 
