@@ -224,29 +224,27 @@ button:active{
 const levels = [
 
 {
-    // مرحله اول
     rows:5,
     cols:5,
 
     tiles:[
-        ["source","", "", "", ""],
-        ["straight", "corner", "straight", "", ""],
-        ["", "corner", "straight", "corner", ""],
-        ["", "", "corner", "straight", ""],
-        ["", "", "", "corner","target"]
+        ["source","straight","straight","straight","corner"],
+        ["","","","", "straight"],
+        ["","","","", "straight"],
+        ["","","","", "straight"],
+        ["","","","", "target"]
     ],
 
     rotations:[
+        0,1,0,1,0,
+        0,0,0,0,1,
         0,0,0,0,0,
-        1,1,0,0,0,
-        0,0,1,1,0,
-        0,0,1,0,0,
-        0,0,0,1,0
+        0,0,0,0,1,
+        0,0,0,0,0
     ]
 }
 
 ];
-
 let levelIndex=0;
 let moves=0;
 let currentRotations=[];
