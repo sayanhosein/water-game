@@ -25,13 +25,13 @@ h1{
     font-size:30px;
 }
 
-#level{
+.level{
     color:#65cfff;
     font-size:21px;
     margin-bottom:12px;
 }
 
-#info{
+.info{
     display:flex;
     justify-content:center;
     gap:35px;
@@ -46,16 +46,12 @@ h1{
 
     display:grid;
     grid-template-columns:repeat(5,1fr);
-
     gap:6px;
 }
 
 .cell{
-    width:100%;
     aspect-ratio:1;
-
     background:#1d293b;
-
     border-radius:10px;
 
     display:flex;
@@ -63,7 +59,6 @@ h1{
     justify-content:center;
 
     position:relative;
-
     cursor:pointer;
 }
 
@@ -90,7 +85,6 @@ h1{
 .pipe{
     width:72%;
     height:72%;
-
     position:relative;
 }
 
@@ -98,28 +92,23 @@ h1{
    STRAIGHT
 ===================== */
 
-.straight::before{
+.straight:before{
     content:"";
-
     position:absolute;
-
     background:#59caff;
-
     border-radius:8px;
 }
 
-.straight.vertical::before{
+.straight.vertical:before{
     width:25%;
     height:100%;
-
     left:37.5%;
     top:0;
 }
 
-.straight.horizontal::before{
+.straight.horizontal:before{
     width:100%;
     height:25%;
-
     left:0;
     top:37.5%;
 }
@@ -128,85 +117,74 @@ h1{
    CORNER
 ===================== */
 
-.corner::before,
-.corner::after{
+.corner:before,
+.corner:after{
     content:"";
-
     position:absolute;
-
     background:#59caff;
-
     border-radius:8px;
 }
 
-/* NORTH + EAST */
+/* NE */
 
-.corner.ne::before{
+.corner.ne:before{
     width:25%;
     height:75%;
-
     left:37.5%;
     top:0;
 }
 
-.corner.ne::after{
+.corner.ne:after{
     width:75%;
     height:25%;
-
     left:25%;
     top:37.5%;
 }
 
-/* EAST + SOUTH */
+/* SE */
 
-.corner.se::before{
+.corner.se:before{
     width:25%;
     height:75%;
-
     left:37.5%;
     top:25%;
 }
 
-.corner.se::after{
+.corner.se:after{
     width:75%;
     height:25%;
-
     left:25%;
     top:37.5%;
 }
 
-/* SOUTH + WEST */
+/* SW */
 
-.corner.sw::before{
+.corner.sw:before{
     width:25%;
     height:75%;
-
     left:37.5%;
     top:25%;
 }
 
-.corner.sw::after{
+.corner.sw:after{
     width:75%;
     height:25%;
-
     left:0;
     top:37.5%;
 }
 
-/* WEST + NORTH */
+/* NW */
 
-.corner.nw::before{
+.corner.nw:before{
     width:25%;
     height:75%;
-
     left:37.5%;
     top:0;
 }
 
-.corner.nw::after{
+.corner.nw:after{
     width:75%;
     height:25%;
-
     left:0;
     top:37.5%;
 }
@@ -221,11 +199,11 @@ h1{
     width:14px;
     height:14px;
 
-    background:#66e0ff;
+    background:#65e0ff;
 
     border-radius:50%;
 
-    box-shadow:0 0 12px #66e0ff;
+    box-shadow:0 0 12px #65e0ff;
 
     z-index:10;
 }
@@ -236,7 +214,6 @@ h1{
 
 button{
     border:0;
-
     border-radius:10px;
 
     padding:13px 28px;
@@ -244,10 +221,7 @@ button{
     margin:18px 5px;
 
     font-size:17px;
-
     font-weight:bold;
-
-    cursor:pointer;
 }
 
 #reset{
@@ -256,7 +230,7 @@ button{
 }
 
 #next{
-    background:#18a96f;
+    background:#19a974;
     color:white;
 
     display:none;
@@ -264,11 +238,9 @@ button{
 
 #message{
     min-height:30px;
-
     margin-top:10px;
 
     font-size:18px;
-
     font-weight:bold;
 }
 
@@ -280,11 +252,11 @@ button{
 
 <h1>💧 Water Runner</h1>
 
-<div id="level">
+<div class="level">
     Level 1
 </div>
 
-<div id="info">
+<div class="info">
 
     <div>
         Moves:
@@ -301,9 +273,7 @@ button{
 
 <div id="game"></div>
 
-
 <div id="message"></div>
-
 
 <button id="reset">
     RESET
@@ -332,152 +302,90 @@ DIRECTIONS
 ========================================
 LEVEL 1
 
-The correct route is:
+CORRECT PATH:
 
-💧 → → ┐
-       │
-       │
-       └ → → → 😈
-
-The player must rotate the pipes.
+💧 ─ ─ ┐
+      │
+      │
+└ ─ ─ ┘
+      │
+      😈
 ========================================
 */
 
 
-const level1 = [
+const level = [
 
-    // ROW 1
+    /* ROW 1 */
 
-    {
-        type:"source",
-        rotation:0
-    },
+    {type:"source", rotation:0},
 
-    {
-        type:"straight",
-        rotation:0
-    },
+    {type:"straight", rotation:0},
 
-    {
-        type:"corner",
-        rotation:0
-    },
+    {type:"corner", rotation:3},
 
-    {
-        type:"empty"
-    },
+    {type:"empty"},
 
-    {
-        type:"empty"
-    },
+    {type:"empty"},
 
 
-    // ROW 2
+    /* ROW 2 */
 
-    {
-        type:"empty"
-    },
+    {type:"empty"},
 
-    {
-        type:"empty"
-    },
+    {type:"empty"},
 
-    {
-        type:"straight",
-        rotation:1
-    },
+    {type:"straight", rotation:1},
 
-    {
-        type:"empty"
-    },
+    {type:"empty"},
 
-    {
-        type:"empty"
-    },
+    {type:"empty"},
 
 
-    // ROW 3
+    /* ROW 3 */
 
-    {
-        type:"corner",
-        rotation:0
-    },
+    {type:"empty"},
 
-    {
-        type:"straight",
-        rotation:0
-    },
+    {type:"empty"},
 
-    {
-        type:"straight",
-        rotation:1
-    },
+    {type:"straight", rotation:0},
 
-    {
-        type:"empty"
-    },
+    {type:"empty"},
 
-    {
-        type:"empty"
-    },
+    {type:"empty"},
 
 
-    // ROW 4
+    /* ROW 4 */
 
-    {
-        type:"straight",
-        rotation:1
-    },
+    {type:"corner", rotation:3},
 
-    {
-        type:"empty"
-    },
+    {type:"straight", rotation:1},
 
-    {
-        type:"empty"
-    },
+    {type:"corner", rotation:0},
 
-    {
-        type:"empty"
-    },
+    {type:"empty"},
 
-    {
-        type:"empty"
-    },
+    {type:"empty"},
 
 
-    // ROW 5
+    /* ROW 5 */
 
-    {
-        type:"corner",
-        rotation:0
-    },
+    {type:"target"},
 
-    {
-        type:"straight",
-        rotation:0
-    },
+    {type:"empty"},
 
-    {
-        type:"straight",
-        rotation:1
-    },
+    {type:"empty"},
 
-    {
-        type:"straight",
-        rotation:0
-    },
+    {type:"empty"},
 
-    {
-        type:"target"
-    }
+    {type:"empty"}
 
 ];
 
 
 /*
 ========================================
-GAME VARIABLES
+GAME
 ========================================
 */
 
@@ -490,11 +398,13 @@ let finished = false;
 
 /*
 ========================================
-PIPE CONNECTIONS
+CONNECTIONS
 ========================================
 */
 
 function getConnections(type,rotation){
+
+    /* STRAIGHT */
 
     if(type === "straight"){
 
@@ -507,42 +417,42 @@ function getConnections(type,rotation){
                 false
             ];
 
-        }else{
-
-            return [
-                false,
-                true,
-                false,
-                true
-            ];
-
         }
 
+        return [
+            false,
+            true,
+            false,
+            true
+        ];
     }
 
+
+    /* CORNER */
 
     if(type === "corner"){
 
         const shapes = [
 
-            // NE
+            /* 0 = NE */
             [true,true,false,false],
 
-            // SE
+            /* 1 = SE */
             [false,true,true,false],
 
-            // SW
+            /* 2 = SW */
             [false,false,true,true],
 
-            // NW
+            /* 3 = NW */
             [true,false,false,true]
 
         ];
 
         return shapes[rotation % 4];
-
     }
 
+
+    /* SOURCE */
 
     if(type === "source"){
 
@@ -552,19 +462,19 @@ function getConnections(type,rotation){
             false,
             false
         ];
-
     }
 
+
+    /* TARGET */
 
     if(type === "target"){
 
         return [
+            true,
             false,
             false,
-            false,
-            true
+            false
         ];
-
     }
 
 
@@ -574,22 +484,21 @@ function getConnections(type,rotation){
         false,
         false
     ];
-
 }
 
 
 /*
 ========================================
-DRAW BOARD
+DRAW
 ========================================
 */
 
-function drawBoard(){
+function draw(){
 
     const game =
         document.getElementById("game");
 
-    game.innerHTML = "";
+    game.innerHTML="";
 
 
     board.forEach((item,index)=>{
@@ -597,44 +506,37 @@ function drawBoard(){
         const cell =
             document.createElement("div");
 
-        cell.className = "cell";
+        cell.className="cell";
 
 
-        /*
-        SOURCE
-        */
+        /* SOURCE */
 
-        if(item.type === "source"){
+        if(item.type==="source"){
 
-            cell.innerHTML =
+            cell.innerHTML=
                 '<div class="source">💧</div>';
 
         }
 
 
-        /*
-        TARGET
-        */
+        /* TARGET */
 
-        else if(item.type === "target"){
+        else if(item.type==="target"){
 
-            cell.innerHTML =
+            cell.innerHTML=
                 '<div class="target">😈</div>';
 
         }
 
 
-        /*
-        STRAIGHT
-        */
+        /* STRAIGHT */
 
-        else if(item.type === "straight"){
+        else if(item.type==="straight"){
 
-            const pipe =
+            const pipe=
                 document.createElement("div");
 
-            pipe.className =
-                "pipe straight";
+            pipe.className="pipe straight";
 
 
             if(item.rotation % 2 === 0){
@@ -653,20 +555,17 @@ function drawBoard(){
         }
 
 
-        /*
-        CORNER
-        */
+        /* CORNER */
 
-        else if(item.type === "corner"){
+        else if(item.type==="corner"){
 
-            const pipe =
+            const pipe=
                 document.createElement("div");
 
-            pipe.className =
-                "pipe corner";
+            pipe.className="pipe corner";
 
 
-            const names = [
+            const names=[
                 "ne",
                 "se",
                 "sw",
@@ -675,7 +574,7 @@ function drawBoard(){
 
 
             pipe.classList.add(
-                names[item.rotation % 4]
+                names[item.rotation]
             );
 
 
@@ -684,16 +583,13 @@ function drawBoard(){
         }
 
 
-        /*
-        CLICK
-        */
+        /* CLICK */
 
-        cell.addEventListener(
-            "click",
-            ()=>{
-                rotatePipe(index);
-            }
-        );
+        cell.onclick=function(){
+
+            rotate(index);
+
+        };
 
 
         game.appendChild(cell);
@@ -709,19 +605,18 @@ ROTATE
 ========================================
 */
 
-function rotatePipe(index){
+function rotate(index){
 
     if(finished)
         return;
 
 
-    const item =
-        board[index];
+    const item=board[index];
 
 
     if(
-        item.type !== "straight" &&
-        item.type !== "corner"
+        item.type!=="straight" &&
+        item.type!=="corner"
     ){
 
         return;
@@ -729,85 +624,85 @@ function rotatePipe(index){
     }
 
 
-    item.rotation =
-        (item.rotation + 1) % 4;
+    item.rotation=
+        (item.rotation+1)%4;
 
 
     moves++;
 
 
     document.getElementById("moves")
-        .textContent = moves;
+        .textContent=moves;
 
 
-    drawBoard();
+    draw();
 
 
-    checkPath();
+    check();
 
 }
 
 
 /*
 ========================================
-FIND PATH
+PATH FINDER
 ========================================
 */
 
 function findPath(){
 
-    const start =
+    const start=
         board.findIndex(
-            item => item.type === "source"
+            x=>x.type==="source"
         );
 
 
-    const target =
+    const target=
         board.findIndex(
-            item => item.type === "target"
+            x=>x.type==="target"
         );
 
 
-    const queue = [start];
+    const queue=[start];
 
-    const visited =
+    const visited=
         new Set([start]);
 
 
-    const parent = {};
+    const parent={};
 
 
-    const directions = [
+    const directions=[
 
-        [-1,0], // NORTH
+        [-1,0],
 
-        [0,1],  // EAST
+        [0,1],
 
-        [1,0],  // SOUTH
+        [1,0],
 
-        [0,-1]  // WEST
+        [0,-1]
 
     ];
 
 
-    while(queue.length > 0){
+    while(queue.length){
 
-        const current =
+        const current=
             queue.shift();
 
 
-        if(current === target){
+        if(current===target){
 
-            const path = [];
+            const path=[];
 
-            let p = current;
+            let p=current;
 
 
-            while(p !== undefined){
+            while(p!==undefined){
 
                 path.unshift(p);
 
-                p = parent[p];
+                p=parent[p];
 
             }
 
@@ -817,93 +712,83 @@ function findPath(){
         }
 
 
-        const row =
-            Math.floor(current / 5);
+        const row=
+            Math.floor(current/5);
 
-        const col =
-            current % 5;
+        const col=
+            current%5;
 
 
-        const item =
+        const item=
             board[current];
 
 
-        const connections =
+        const con=
             getConnections(
                 item.type,
                 item.rotation
             );
 
 
-        for(
-            let d=0;
-            d<4;
-            d++
-        ){
+        for(let d=0;d<4;d++){
 
-            if(!connections[d])
+            if(!con[d])
                 continue;
 
 
-            const newRow =
-                row + directions[d][0];
+            const nr=
+                row+directions[d][0];
 
-            const newCol =
-                col + directions[d][1];
+            const nc=
+                col+directions[d][1];
 
 
             if(
-                newRow < 0 ||
-                newRow >= 5 ||
-                newCol < 0 ||
-                newCol >= 5
-            ){
-
+                nr<0 ||
+                nr>=5 ||
+                nc<0 ||
+                nc>=5
+            )
                 continue;
 
-            }
 
-
-            const next =
-                newRow * 5 + newCol;
+            const next=
+                nr*5+nc;
 
 
             if(visited.has(next))
                 continue;
 
 
-            const nextItem =
+            const nextItem=
                 board[next];
 
 
             if(
                 !nextItem ||
-                nextItem.type === "empty"
-            ){
-
+                nextItem.type==="empty"
+            )
                 continue;
 
-            }
+
+            const opposite=
+                (d+2)%4;
 
 
-            const opposite =
-                (d + 2) % 4;
-
-
-            const nextConnections =
+            const nextCon=
                 getConnections(
                     nextItem.type,
                     nextItem.rotation
                 );
 
 
-            if(!nextConnections[opposite])
+            if(!nextCon[opposite])
                 continue;
 
 
             visited.add(next);
 
-            parent[next] = current;
+            parent[next]=current;
 
             queue.push(next);
 
@@ -919,50 +804,49 @@ function findPath(){
 
 /*
 ========================================
-CHECK PATH
+CHECK
 ========================================
 */
 
-function checkPath(){
+function check(){
 
-    const path =
-        findPath();
+    const path=findPath();
 
 
     if(!path)
         return;
 
 
-    finished = true;
+    finished=true;
 
 
-    animateWater(path);
+    animate(path);
 
 }
 
 
 /*
 ========================================
-WATER ANIMATION
+WATER
 ========================================
 */
 
-function animateWater(path){
+function animate(path){
 
-    const cells =
+    const cells=
         document.querySelectorAll(".cell");
 
 
-    let index = 0;
+    let i=0;
 
 
-    function next(){
+    function step(){
 
-        if(index >= path.length){
+        if(i>=path.length){
 
             setTimeout(
-                levelComplete,
-                500
+                complete,
+                400
             );
 
             return;
@@ -970,71 +854,63 @@ function animateWater(path){
         }
 
 
-        const cell =
-            cells[path[index]];
-
-
-        const water =
+        const water=
             document.createElement("div");
 
 
-        water.className =
-            "water";
+        water.className="water";
 
 
-        cell.appendChild(water);
+        cells[path[i]]
+            .appendChild(water);
 
 
-        index++;
+        i++;
 
 
         setTimeout(
-            next,
-            220
+            step,
+            200
         );
 
     }
 
 
-    next();
+    step();
 
 }
 
 
 /*
 ========================================
-LEVEL COMPLETE
+COMPLETE
 ========================================
 */
 
-function levelComplete(){
+function complete(){
 
     document.getElementById("message")
-        .textContent =
+        .textContent=
         "💦 Water reached the chamber!";
 
 
-    let stars = "★★★";
+    let stars="★★★";
 
 
-    if(moves > 12)
-        stars = "★★☆";
+    if(moves>12)
+        stars="★★☆";
 
 
-    if(moves > 20)
-        stars = "★☆☆";
+    if(moves>20)
+        stars="★☆☆";
 
 
     document.getElementById("stars")
-        .textContent = stars;
+        .textContent=stars;
 
-
-    /*
-    NEXT BUTTON
-    */
 
     document.getElementById("next")
-        .style.display = "inline-block";
+        .style.display="inline-block";
 
 }
 
@@ -1046,45 +922,42 @@ RESET
 */
 
 document.getElementById("reset")
-    .addEventListener(
-        "click",
-        ()=>{
+    .onclick=function(){
 
-            moves = 0;
+        moves=0;
 
-            finished = false;
-
-            document.getElementById("moves")
-                .textContent = "0";
-
-            document.getElementById("stars")
-                .textContent = "★★★";
-
-            document.getElementById("message")
-                .textContent = "";
-
-            document.getElementById("next")
-                .style.display = "none";
+        finished=false;
 
 
-            /*
-            RESET ORIGINAL BOARD
-            */
-
-            board =
-                level1.map(item=>({
-
-                    type:item.type,
-
-                    rotation:item.rotation
-
-                }));
+        document.getElementById("moves")
+            .textContent="0";
 
 
-            drawBoard();
+        document.getElementById("stars")
+            .textContent="★★★";
 
-        }
-    );
+
+        document.getElementById("message")
+            .textContent="";
+
+
+        document.getElementById("next")
+            .style.display="none";
+
+
+        board=
+            level.map(item=>({
+
+                type:item.type,
+
+                rotation:item.rotation
+
+            }));
+
+
+        draw();
+
+    };
 
 
 /*
@@ -1093,8 +966,8 @@ START
 ========================================
 */
 
-board =
-    level1.map(item=>({
+board=
+    level.map(item=>({
 
         type:item.type,
 
@@ -1103,7 +976,7 @@ board =
     }));
 
 
-drawBoard();
+draw();
 
 </script>
 
