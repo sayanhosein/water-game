@@ -268,7 +268,7 @@ let moves = 0;
 */
 
 function createGame(){
-
+board.style.direction = "ltr";
     board.innerHTML="";
 
     rotations=[];
@@ -330,7 +330,15 @@ function createGame(){
 
             pipe.dataset.index=i;
 
-            rotations[i]=0;
+            if(i===1 || i===2 || i===3){
+    rotations[i]=1;
+}
+else if(i===4){
+    rotations[i]=1;
+}
+else{
+    rotations[i]=0;
+}
 
             pipe.onclick=function(){
 
