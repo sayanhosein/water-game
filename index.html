@@ -191,7 +191,57 @@ body{
 }
 
 
-/* Water */
+/* =========================
+   VALVE
+========================= */
+
+.pipe.valve::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:25%;
+
+    height:100%;
+
+    left:37.5%;
+
+    top:0;
+
+    background:#48c8f7;
+
+    border-radius:30px;
+}
+
+.pipe.valve::after{
+
+    content:"🔵";
+
+    position:absolute;
+
+    width:55%;
+
+    height:55%;
+
+    left:22.5%;
+
+    top:22.5%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:24px;
+
+}
+
+
+/* =========================
+   WATER
+========================= */
 
 .pipe.water{
 
@@ -202,8 +252,7 @@ body{
         );
 }
 
-.pipe.water::before,
-.pipe.water::after{
+.pipe.water::before{
 
     background:#a0ecff;
 }
@@ -325,18 +374,6 @@ button{
 
     box-shadow:
         0 4px 0 #087db3;
-
-    transition:
-        transform .1s ease,
-        box-shadow .1s ease;
-}
-
-button:active{
-
-    transform:translateY(3px);
-
-    box-shadow:
-        0 1px 0 #087db3;
 }
 
 .reset{
@@ -369,7 +406,6 @@ button:active{
     <div class="title">
         💧 Water Runner
     </div>
-
 
     <div class="header">
 
@@ -405,9 +441,7 @@ button:active{
     </div>
 
 
-    <button
-        onclick="sendWater()"
-    >
+    <button onclick="sendWater()">
         💧 SEND WATER
     </button>
 
@@ -433,26 +467,16 @@ button:active{
 
 <script>
 
+
 /* =====================================================
-   LEVEL DATA
+   LEVELS
 ===================================================== */
-
-
-/*
-   CONNECTION SYSTEM
-
-   0 = TOP
-   1 = RIGHT
-   2 = BOTTOM
-   3 = LEFT
-*/
-
 
 const levels = [
 
-/* =====================================================
+/* =========================
    LEVEL 1
-===================================================== */
+========================= */
 
 {
 
@@ -490,38 +514,20 @@ const levels = [
 
     ],
 
-
-    /*
-       Starting rotations.
-
-       The player must rotate:
-
-       1 → 90°
-       2 → 90°
-       3 → 90°
-       4 → 180°
-    */
-
     rotations:[
-
         0,0,0,0,0,
-
         0,0,0,0,0,
-
         0,0,0,0,0,
-
         0,0,0,0,0,
-
         0,0,0,0,0
-
     ]
 
 },
 
 
-/* =====================================================
+/* =========================
    LEVEL 2
-===================================================== */
+========================= */
 
 {
 
@@ -559,33 +565,63 @@ const levels = [
 
     ],
 
+    rotations:[
+        0,0,0,0,0,
+        0,0,0,0,0,
+        0,0,0,0,0,
+        0,0,0,0,0,
+        0,0,0,0,0
+    ]
 
-    /*
-       Correct path:
+},
 
-       💧
-        ↓
-        ↓
-        └───┐
-            │
-            └── 😈
 
-       The starting rotations are intentionally
-       scrambled.
-    */
+/* =========================
+   LEVEL 3
+========================= */
+
+{
+
+    tiles:[
+
+        "source",
+        "valve",
+        "straight",
+        "",
+        "",
+
+        "",
+        "",
+        "corner",
+        "",
+        "",
+
+        "",
+        "",
+        "straight",
+        "",
+        "",
+
+        "",
+        "",
+        "corner",
+        "straight",
+        "",
+
+        "",
+        "",
+        "",
+        "corner",
+        "target"
+
+    ],
 
     rotations:[
-
         0,0,0,0,0,
-
         0,0,0,0,0,
-
         0,0,0,0,0,
-
         0,0,0,0,0,
-
         0,0,0,0,0
-
     ]
 
 }
@@ -594,7 +630,7 @@ const levels = [
 
 
 /* =====================================================
-   GAME VARIABLES
+   VARIABLES
 ===================================================== */
 
 let currentLevel = 0;
@@ -637,36 +673,25 @@ function createLevel(){
 
     clearWater();
 
-
     board.innerHTML = "";
 
-
     moves = 0;
-
 
     movesElement.innerText =
         "Moves: 0";
 
-
     starsElement.innerText =
         "☆☆☆";
-
 
     message.innerText =
         "Rotate the pipes and connect the water to 😈";
 
-
     nextButton.style.display =
         "none";
-
 
     levelNumber.innerText =
         currentLevel + 1;
 
-
-    /*
-       Copy starting rotations.
-    */
 
     rotations =
         [
@@ -678,10 +703,6 @@ function createLevel(){
         levels[currentLevel].tiles;
 
 
-    /*
-       Build 25 cells.
-    */
-
     for(
         let i=0;
         i<25;
@@ -690,7 +711,6 @@ function createLevel(){
 
         const cell =
             document.createElement("div");
-
 
         cell.className =
             "cell";
@@ -707,16 +727,14 @@ function createLevel(){
             const source =
                 document.createElement("div");
 
-
             source.className =
                 "source";
-
 
             source.innerText =
                 "💧";
 
-
             cell.appendChild(source);
+
         }
 
 
@@ -727,20 +745,17 @@ function createLevel(){
             const target =
                 document.createElement("div");
 
-
             target.className =
                 "target";
-
 
             target.id =
                 "target";
 
-
             target.innerText =
                 "😈";
 
-
             cell.appendChild(target);
+
         }
 
 
@@ -748,20 +763,18 @@ function createLevel(){
 
         else if(
             type === "straight" ||
-            type === "corner"
+            type === "corner" ||
+            type === "valve"
         ){
 
             const pipe =
                 document.createElement("div");
 
-
             pipe.className =
                 "pipe " + type;
 
-
             pipe.dataset.index =
                 i;
-
 
             pipe.style.transform =
                 "rotate(" +
@@ -798,7 +811,6 @@ function createLevel(){
 function rotatePipe(index){
 
     rotations[index]++;
-
 
     if(
         rotations[index] >= 4
@@ -839,9 +851,13 @@ function rotatePipe(index){
         document.getElementById("target");
 
 
-    target.classList.remove(
-        "filled"
-    );
+    if(target){
+
+        target.classList.remove(
+            "filled"
+        );
+
+    }
 
 
     starsElement.innerText =
@@ -871,13 +887,12 @@ function getConnections(
 
     /*
        STRAIGHT
-
-       Default:
        TOP + BOTTOM
     */
 
     if(
-        type === "straight"
+        type === "straight" ||
+        type === "valve"
     ){
 
         connections =
@@ -888,8 +903,6 @@ function getConnections(
 
     /*
        CORNER
-
-       Default:
        TOP + RIGHT
     */
 
@@ -910,10 +923,6 @@ function getConnections(
 
     }
 
-
-    /*
-       Rotate clockwise.
-    */
 
     for(
         let i=0;
@@ -938,7 +947,7 @@ function getConnections(
 
 
 /* =====================================================
-   FIND WATER PATH
+   FIND PATH
 ===================================================== */
 
 function findPath(){
@@ -958,11 +967,6 @@ function findPath(){
     const queue = [];
 
 
-    /*
-       Source always starts
-       at the first cell.
-    */
-
     queue.push({
         row:0,
         col:0
@@ -974,15 +978,6 @@ function findPath(){
 
     let targetKey = null;
 
-
-    /*
-       Four directions:
-
-       TOP
-       RIGHT
-       BOTTOM
-       LEFT
-    */
 
     const directions = [
 
@@ -1008,7 +1003,6 @@ function findPath(){
         const row =
             current.row;
 
-
         const col =
             current.col;
 
@@ -1016,10 +1010,6 @@ function findPath(){
         const index =
             row * 5 + col;
 
-
-        /*
-           TARGET FOUND
-        */
 
         if(
             tiles[index] === "target"
@@ -1033,20 +1023,12 @@ function findPath(){
         }
 
 
-        /*
-           CURRENT CONNECTIONS
-        */
-
         let currentConnections;
 
 
         if(
             tiles[index] === "source"
         ){
-
-            /*
-               Source sends water RIGHT.
-            */
 
             currentConnections =
                 [0,1,0,0];
@@ -1064,10 +1046,6 @@ function findPath(){
         }
 
 
-        /*
-           Check neighbours.
-        */
-
         for(
             const direction
             of directions
@@ -1077,7 +1055,6 @@ function findPath(){
                 row +
                 direction[0];
 
-
             const newCol =
                 col +
                 direction[1];
@@ -1086,14 +1063,9 @@ function findPath(){
             const currentSide =
                 direction[2];
 
-
             const oppositeSide =
                 direction[3];
 
-
-            /*
-               Outside board.
-            */
 
             if(
                 newRow < 0 ||
@@ -1112,10 +1084,6 @@ function findPath(){
                 newCol;
 
 
-            /*
-               Empty cell.
-            */
-
             if(
                 tiles[newIndex] === ""
             ){
@@ -1125,21 +1093,12 @@ function findPath(){
             }
 
 
-            /*
-               NEXT CONNECTIONS
-            */
-
             let nextConnections;
 
 
             if(
                 tiles[newIndex] === "target"
             ){
-
-                /*
-                   Target accepts water
-                   from any direction.
-                */
 
                 nextConnections =
                     [1,1,1,1];
@@ -1156,10 +1115,6 @@ function findPath(){
 
             }
 
-
-            /*
-               Pipes must connect.
-            */
 
             if(
                 currentConnections[currentSide] &&
@@ -1201,20 +1156,12 @@ function findPath(){
     }
 
 
-    /*
-       No target.
-    */
-
     if(!targetKey){
 
         return null;
 
     }
 
-
-    /*
-       Reconstruct path.
-    */
 
     const path = [];
 
@@ -1265,28 +1212,18 @@ function sendWater(){
         findPath();
 
 
-    /*
-       PATH NOT FOUND
-    */
-
     if(!path){
 
         message.innerText =
             "💧 The path is not complete. Rotate the pipes.";
 
-
         starsElement.innerText =
             "☆☆☆";
-
 
         return;
 
     }
 
-
-    /*
-       PATH FOUND
-    */
 
     message.innerText =
         "💧 Water is flowing...";
@@ -1303,9 +1240,6 @@ function sendWater(){
 function animateWater(path){
 
     let position = 0;
-
-
-    clearWater();
 
 
     waterTimer =
@@ -1359,7 +1293,7 @@ function animateWater(path){
 
 
 /* =====================================================
-   LEVEL COMPLETE
+   FINISH LEVEL
 ===================================================== */
 
 function finishLevel(){
@@ -1374,10 +1308,6 @@ function finishLevel(){
         "filled"
     );
 
-
-    /*
-       Calculate stars.
-    */
 
     let stars = 3;
 
@@ -1404,10 +1334,6 @@ function finishLevel(){
         "⭐".repeat(stars) +
         "☆".repeat(3-stars);
 
-
-    /*
-       Level complete message.
-    */
 
     if(
         currentLevel <
