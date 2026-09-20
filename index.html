@@ -9,1250 +9,1101 @@
 <style>
 
 *{
-  box-sizing:border-box;
+    box-sizing:border-box;
 }
 
 body{
-  margin:0;
-  background:#101827;
-  color:white;
-  font-family:Arial,sans-serif;
-  text-align:center;
+    margin:0;
+    background:#101827;
+    color:white;
+    font-family:Arial,sans-serif;
+    text-align:center;
 }
 
 h1{
-  margin:18px 0 4px;
-  font-size:30px;
+    margin:20px 0 5px;
+    font-size:30px;
 }
 
-#levelTitle{
-  color:#69cfff;
-  font-size:20px;
-  margin-bottom:12px;
+#level{
+    color:#65cfff;
+    font-size:21px;
+    margin-bottom:12px;
 }
 
 #info{
-  display:flex;
-  justify-content:center;
-  gap:30px;
-  font-size:17px;
-  margin-bottom:14px;
+    display:flex;
+    justify-content:center;
+    gap:35px;
+    font-size:18px;
+    margin-bottom:15px;
 }
 
 #game{
-  width:360px;
-  max-width:94vw;
-  margin:auto;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:5px;
+    width:360px;
+    max-width:94vw;
+    margin:auto;
+
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+
+    gap:6px;
 }
 
 .cell{
-  width:100%;
-  aspect-ratio:1;
-  background:#1d293b;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  cursor:pointer;
+    width:100%;
+    aspect-ratio:1;
+
+    background:#1d293b;
+
+    border-radius:10px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    position:relative;
+
+    cursor:pointer;
 }
+
+/* =====================
+   SOURCE
+===================== */
+
+.source{
+    font-size:34px;
+}
+
+/* =====================
+   TARGET
+===================== */
+
+.target{
+    font-size:32px;
+}
+
+/* =====================
+   PIPE
+===================== */
 
 .pipe{
-  width:72%;
-  height:72%;
-  position:relative;
+    width:72%;
+    height:72%;
+
+    position:relative;
 }
 
-/* =========================
+/* =====================
    STRAIGHT
-========================= */
+===================== */
 
 .straight::before{
-  content:"";
-  position:absolute;
-  background:#59c9ff;
-  border-radius:8px;
+    content:"";
+
+    position:absolute;
+
+    background:#59caff;
+
+    border-radius:8px;
 }
 
 .straight.vertical::before{
-  width:25%;
-  height:100%;
-  left:37.5%;
-  top:0;
+    width:25%;
+    height:100%;
+
+    left:37.5%;
+    top:0;
 }
 
 .straight.horizontal::before{
-  width:100%;
-  height:25%;
-  left:0;
-  top:37.5%;
+    width:100%;
+    height:25%;
+
+    left:0;
+    top:37.5%;
 }
 
-/* =========================
-   CORNERS
-========================= */
+/* =====================
+   CORNER
+===================== */
 
 .corner::before,
 .corner::after{
-  content:"";
-  position:absolute;
-  background:#59c9ff;
-  border-radius:8px;
+    content:"";
+
+    position:absolute;
+
+    background:#59caff;
+
+    border-radius:8px;
 }
 
-/* N + E */
+/* NORTH + EAST */
 
 .corner.ne::before{
-  width:25%;
-  height:75%;
-  left:37.5%;
-  top:0;
+    width:25%;
+    height:75%;
+
+    left:37.5%;
+    top:0;
 }
 
 .corner.ne::after{
-  width:75%;
-  height:25%;
-  left:25%;
-  top:37.5%;
+    width:75%;
+    height:25%;
+
+    left:25%;
+    top:37.5%;
 }
 
-/* E + S */
+/* EAST + SOUTH */
 
 .corner.se::before{
-  width:25%;
-  height:75%;
-  left:37.5%;
-  top:25%;
+    width:25%;
+    height:75%;
+
+    left:37.5%;
+    top:25%;
 }
 
 .corner.se::after{
-  width:75%;
-  height:25%;
-  left:25%;
-  top:37.5%;
+    width:75%;
+    height:25%;
+
+    left:25%;
+    top:37.5%;
 }
 
-/* S + W */
+/* SOUTH + WEST */
 
 .corner.sw::before{
-  width:25%;
-  height:75%;
-  left:37.5%;
-  top:25%;
+    width:25%;
+    height:75%;
+
+    left:37.5%;
+    top:25%;
 }
 
 .corner.sw::after{
-  width:75%;
-  height:25%;
-  left:0;
-  top:37.5%;
+    width:75%;
+    height:25%;
+
+    left:0;
+    top:37.5%;
 }
 
-/* W + N */
+/* WEST + NORTH */
 
 .corner.nw::before{
-  width:25%;
-  height:75%;
-  left:37.5%;
-  top:0;
+    width:25%;
+    height:75%;
+
+    left:37.5%;
+    top:0;
 }
 
 .corner.nw::after{
-  width:75%;
-  height:25%;
-  left:0;
-  top:37.5%;
+    width:75%;
+    height:25%;
+
+    left:0;
+    top:37.5%;
 }
 
-/* =========================
-   SOURCE / TARGET
-========================= */
-
-.sourceIcon{
-  font-size:32px;
-}
-
-.targetIcon{
-  font-size:31px;
-}
-
-/* =========================
-   VALVE
-========================= */
-
-.valve{
-  width:72%;
-  height:72%;
-  position:relative;
-}
-
-.valvePipe{
-  position:absolute;
-  width:25%;
-  height:100%;
-  left:37.5%;
-  top:0;
-  background:#596579;
-  border-radius:8px;
-}
-
-.valve.open .valvePipe{
-  background:#59c9ff;
-}
-
-.valveCircle{
-  position:absolute;
-  width:52%;
-  height:52%;
-  left:24%;
-  top:24%;
-  border-radius:50%;
-  border:4px solid white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:9px;
-  font-weight:bold;
-  z-index:2;
-}
-
-.valve.open .valveCircle{
-  background:#18a957;
-}
-
-.valve.closed .valveCircle{
-  background:#df3838;
-}
-
-/* =========================
+/* =====================
    WATER
-========================= */
+===================== */
 
 .water{
-  position:absolute;
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  background:#58ddff;
-  box-shadow:0 0 12px #58ddff;
-  z-index:10;
+    position:absolute;
+
+    width:14px;
+    height:14px;
+
+    background:#66e0ff;
+
+    border-radius:50%;
+
+    box-shadow:0 0 12px #66e0ff;
+
+    z-index:10;
 }
 
-/* =========================
+/* =====================
    BUTTONS
-========================= */
+===================== */
 
 button{
-  border:0;
-  border-radius:10px;
-  padding:13px 25px;
-  margin:15px 5px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
+    border:0;
+
+    border-radius:10px;
+
+    padding:13px 28px;
+
+    margin:18px 5px;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    cursor:pointer;
 }
 
-#resetBtn{
-  background:#34445a;
-  color:white;
+#reset{
+    background:#34455c;
+    color:white;
 }
 
-#nextBtn{
-  background:#19a974;
-  color:white;
-  display:none;
+#next{
+    background:#18a96f;
+    color:white;
+
+    display:none;
 }
 
 #message{
-  min-height:30px;
-  margin-top:10px;
-  font-size:18px;
-  font-weight:bold;
+    min-height:30px;
+
+    margin-top:10px;
+
+    font-size:18px;
+
+    font-weight:bold;
 }
 
 </style>
 </head>
 
+
 <body>
 
 <h1>💧 Water Runner</h1>
 
-<div id="levelTitle">Level 1</div>
+<div id="level">
+    Level 1
+</div>
 
 <div id="info">
 
-  <div>
-    Moves:
-    <span id="moves">0</span>
-  </div>
+    <div>
+        Moves:
+        <span id="moves">0</span>
+    </div>
 
-  <div>
-    Stars:
-    <span id="stars">★★★</span>
-  </div>
+    <div>
+        Stars:
+        <span id="stars">★★★</span>
+    </div>
 
 </div>
 
+
 <div id="game"></div>
+
 
 <div id="message"></div>
 
-<button id="resetBtn">RESET</button>
 
-<button id="nextBtn">NEXT LEVEL</button>
+<button id="reset">
+    RESET
+</button>
+
+<button id="next">
+    NEXT LEVEL
+</button>
 
 
 <script>
 
-/* =====================================
-   DIRECTIONS
+/*
+========================================
+DIRECTIONS
 
-   0 = NORTH
-   1 = EAST
-   2 = SOUTH
-   3 = WEST
-===================================== */
+0 = NORTH
+1 = EAST
+2 = SOUTH
+3 = WEST
+========================================
+*/
 
 
-/* =====================================
-   PIPE CONNECTIONS
-===================================== */
+/*
+========================================
+LEVEL 1
 
-function connections(type,rotation){
+The correct route is:
 
-  if(type==="straight"){
+💧 → → ┐
+       │
+       │
+       └ → → → 😈
 
-    if(rotation%2===0){
+The player must rotate the pipes.
+========================================
+*/
 
-      return [true,false,true,false];
 
-    }else{
+const level1 = [
 
-      return [false,true,false,true];
+    // ROW 1
+
+    {
+        type:"source",
+        rotation:0
+    },
+
+    {
+        type:"straight",
+        rotation:0
+    },
+
+    {
+        type:"corner",
+        rotation:0
+    },
+
+    {
+        type:"empty"
+    },
+
+    {
+        type:"empty"
+    },
+
+
+    // ROW 2
+
+    {
+        type:"empty"
+    },
+
+    {
+        type:"empty"
+    },
+
+    {
+        type:"straight",
+        rotation:1
+    },
+
+    {
+        type:"empty"
+    },
+
+    {
+        type:"empty"
+    },
+
+
+    // ROW 3
+
+    {
+        type:"corner",
+        rotation:0
+    },
+
+    {
+        type:"straight",
+        rotation:0
+    },
+
+    {
+        type:"straight",
+        rotation:1
+    },
+
+    {
+        type:"empty"
+    },
+
+    {
+        type:"empty"
+    },
+
+
+    // ROW 4
+
+    {
+        type:"straight",
+        rotation:1
+    },
+
+    {
+        type:"empty"
+    },
+
+    {
+        type:"empty"
+    },
+
+    {
+        type:"empty"
+    },
+
+    {
+        type:"empty"
+    },
+
+
+    // ROW 5
+
+    {
+        type:"corner",
+        rotation:0
+    },
+
+    {
+        type:"straight",
+        rotation:0
+    },
+
+    {
+        type:"straight",
+        rotation:1
+    },
+
+    {
+        type:"straight",
+        rotation:0
+    },
+
+    {
+        type:"target"
+    }
+
+];
+
+
+/*
+========================================
+GAME VARIABLES
+========================================
+*/
+
+let board = [];
+
+let moves = 0;
+
+let finished = false;
+
+
+/*
+========================================
+PIPE CONNECTIONS
+========================================
+*/
+
+function getConnections(type,rotation){
+
+    if(type === "straight"){
+
+        if(rotation % 2 === 0){
+
+            return [
+                true,
+                false,
+                true,
+                false
+            ];
+
+        }else{
+
+            return [
+                false,
+                true,
+                false,
+                true
+            ];
+
+        }
 
     }
 
-  }
+
+    if(type === "corner"){
+
+        const shapes = [
+
+            // NE
+            [true,true,false,false],
+
+            // SE
+            [false,true,true,false],
+
+            // SW
+            [false,false,true,true],
+
+            // NW
+            [true,false,false,true]
+
+        ];
+
+        return shapes[rotation % 4];
+
+    }
 
 
-  if(type==="corner"){
+    if(type === "source"){
 
-    const shapes=[
+        return [
+            false,
+            true,
+            false,
+            false
+        ];
 
-      [true,true,false,false],   // NE
-      [false,true,true,false],   // SE
-      [false,false,true,true],   // SW
-      [true,false,false,true]    // NW
+    }
 
+
+    if(type === "target"){
+
+        return [
+            false,
+            false,
+            false,
+            true
+        ];
+
+    }
+
+
+    return [
+        false,
+        false,
+        false,
+        false
     ];
 
-    return shapes[rotation%4];
-
-  }
-
-
-  if(type==="valve"){
-
-    /*
-      Valve is horizontal when rotation = 1 or 3
-      and vertical when rotation = 0 or 2
-    */
-
-    if(rotation%2===0){
-
-      return [true,false,true,false];
-
-    }else{
-
-      return [false,true,false,true];
-
-    }
-
-  }
-
-
-  if(type==="source"){
-
-    // Water leaves source toward EAST
-
-    return [false,true,false,false];
-
-  }
-
-
-  if(type==="target"){
-
-    // Target accepts water from any direction
-
-    return [true,true,true,true];
-
-  }
-
-
-  return [false,false,false,false];
-
 }
 
 
-/* =====================================
-   CREATE TILE
-===================================== */
-
-function tile(type,rotation=0,open=true){
-
-  return {
-
-    type:type,
-    rotation:rotation,
-    open:open
-
-  };
-
-}
-
-
-/* =====================================
-   LEVEL 1
-=====================================
-
-   Correct path:
-
-   SOURCE
-      →
-      →
-      ↓
-      ↓
-      ←
-      ←
-      ↓
-      ↓
-    TARGET
-
-===================================== */
-
-const level1=[
-
-  tile("source",0),
-
-  tile("straight",1),
-
-  tile("corner",1),
-
-  tile("straight",0),
-
-  tile("straight",1),
-
-
-  tile("straight",0),
-  tile("straight",0),
-  tile("straight",0),
-  tile("corner",2),
-  tile("straight",0),
-
-
-  tile("corner",1),
-  tile("straight",1),
-  tile("straight",1),
-  tile("straight",1),
-  tile("straight",0),
-
-
-  tile("straight",0),
-  tile("straight",0),
-  tile("straight",0),
-  tile("straight",0),
-  tile("straight",0),
-
-
-  tile("target",0),
-  tile("straight",1),
-  tile("straight",1),
-  tile("straight",1),
-  tile("straight",1)
-
-];
-
-
-/* =====================================
-   LEVEL 2
-=====================================
-
-   Different route
-
-===================================== */
-
-const level2=[
-
-  tile("source",0),
-  tile("straight",1),
-  tile("straight",1),
-  tile("corner",1),
-  tile("straight",0),
-
-
-  tile("straight",0),
-  tile("straight",0),
-  tile("straight",0),
-  tile("straight",0),
-  tile("corner",2),
-
-
-  tile("straight",1),
-  tile("straight",1),
-  tile("corner",0),
-  tile("straight",1),
-  tile("straight",0),
-
-
-  tile("straight",0),
-  tile("straight",0),
-  tile("straight",0),
-  tile("corner",1),
-  tile("straight",0),
-
-
-  tile("target",0),
-  tile("straight",1),
-  tile("straight",1),
-  tile("straight",1),
-  tile("straight",1)
-
-];
-
-
-/* =====================================
-   LEVEL 3
-   REAL VALVE
-=====================================
-
-   Valve starts CLOSED.
-
-   Player must:
-
-   1. Open valve
-   2. Rotate pipes
-   3. Connect the water
-
-===================================== */
-
-const level3=[
-
-  tile("source",0),
-
-  tile("valve",1,false),
-
-  tile("straight",1),
-
-  tile("corner",1),
-
-  tile("straight",0),
-
-
-  tile("straight",0),
-  tile("straight",0),
-  tile("straight",0),
-  tile("straight",0),
-  tile("straight",0),
-
-
-  tile("corner",2),
-
-  tile("straight",1),
-
-  tile("straight",1),
-
-  tile("corner",1),
-
-  tile("straight",0),
-
-
-  tile("straight",0),
-  tile("corner",0),
-  tile("straight",1),
-  tile("straight",1),
-  tile("straight",0),
-
-
-  tile("straight",0),
-  tile("straight",1),
-  tile("straight",1),
-  tile("straight",1),
-  tile("target",0)
-
-];
-
-
-const levels=[
-  level1,
-  level2,
-  level3
-];
-
-
-let currentLevel=0;
-let board=[];
-let moves=0;
-let completed=false;
-
-
-/* =====================================
-   DRAW BOARD
-===================================== */
+/*
+========================================
+DRAW BOARD
+========================================
+*/
 
 function drawBoard(){
 
-  const game=document.getElementById("game");
+    const game =
+        document.getElementById("game");
 
-  game.innerHTML="";
+    game.innerHTML = "";
 
 
-  board.forEach((item,index)=>{
+    board.forEach((item,index)=>{
 
-    const cell=document.createElement("div");
+        const cell =
+            document.createElement("div");
 
-    cell.className="cell";
+        cell.className = "cell";
 
 
-    /* SOURCE */
+        /*
+        SOURCE
+        */
 
-    if(item.type==="source"){
+        if(item.type === "source"){
 
-      const icon=document.createElement("div");
+            cell.innerHTML =
+                '<div class="source">💧</div>';
 
-      icon.className="sourceIcon";
+        }
 
-      icon.textContent="💧";
 
-      cell.appendChild(icon);
+        /*
+        TARGET
+        */
 
-    }
+        else if(item.type === "target"){
 
+            cell.innerHTML =
+                '<div class="target">😈</div>';
 
-    /* TARGET */
+        }
 
-    else if(item.type==="target"){
 
-      const icon=document.createElement("div");
+        /*
+        STRAIGHT
+        */
 
-      icon.className="targetIcon";
+        else if(item.type === "straight"){
 
-      icon.textContent="😈";
+            const pipe =
+                document.createElement("div");
 
-      cell.appendChild(icon);
+            pipe.className =
+                "pipe straight";
 
-    }
 
+            if(item.rotation % 2 === 0){
 
-    /* STRAIGHT */
+                pipe.classList.add("vertical");
 
-    else if(item.type==="straight"){
+            }else{
 
-      const pipe=document.createElement("div");
+                pipe.classList.add("horizontal");
 
-      pipe.className="pipe straight";
+            }
 
 
-      if(item.rotation%2===0){
+            cell.appendChild(pipe);
 
-        pipe.classList.add("vertical");
+        }
 
-      }else{
 
-        pipe.classList.add("horizontal");
+        /*
+        CORNER
+        */
 
-      }
+        else if(item.type === "corner"){
 
+            const pipe =
+                document.createElement("div");
 
-      cell.appendChild(pipe);
+            pipe.className =
+                "pipe corner";
 
-    }
 
+            const names = [
+                "ne",
+                "se",
+                "sw",
+                "nw"
+            ];
 
-    /* CORNER */
 
-    else if(item.type==="corner"){
+            pipe.classList.add(
+                names[item.rotation % 4]
+            );
 
-      const pipe=document.createElement("div");
 
-      pipe.className="pipe corner";
+            cell.appendChild(pipe);
 
+        }
 
-      const names=[
-        "ne",
-        "se",
-        "sw",
-        "nw"
-      ];
 
-
-      pipe.classList.add(
-        names[item.rotation%4]
-      );
-
-
-      cell.appendChild(pipe);
-
-    }
-
-
-    /* VALVE */
-
-    else if(item.type==="valve"){
-
-      const valve=document.createElement("div");
-
-      valve.className="valve";
-
-
-      if(item.open){
-
-        valve.classList.add("open");
-
-      }else{
-
-        valve.classList.add("closed");
-
-      }
-
-
-      const pipe=document.createElement("div");
-
-      pipe.className="valvePipe";
-
-
-      valve.appendChild(pipe);
-
-
-      const circle=document.createElement("div");
-
-      circle.className="valveCircle";
-
-      circle.textContent=
-        item.open ? "OPEN" : "CLOSED";
-
-
-      valve.appendChild(circle);
-
-      cell.appendChild(valve);
-
-    }
-
-
-    cell.addEventListener(
-      "click",
-      ()=>handleClick(index)
-    );
-
-
-    game.appendChild(cell);
-
-  });
-
-}
-
-
-/* =====================================
-   CLICK
-===================================== */
-
-function handleClick(index){
-
-  if(completed) return;
-
-
-  const item=board[index];
-
-
-  if(
-    item.type==="source" ||
-    item.type==="target"
-  ){
-
-    return;
-
-  }
-
-
-  /* VALVE */
-
-  if(item.type==="valve"){
-
-    item.open=!item.open;
-
-    moves++;
-
-    updateInfo();
-
-    drawBoard();
-
-    checkPath();
-
-    return;
-
-  }
-
-
-  /* NORMAL PIPE */
-
-  item.rotation=
-    (item.rotation+1)%4;
-
-
-  moves++;
-
-  updateInfo();
-
-  drawBoard();
-
-  checkPath();
-
-}
-
-
-/* =====================================
-   FIND WATER PATH
-===================================== */
-
-function findPath(){
-
-  const start=
-    board.findIndex(
-      x=>x.type==="source"
-    );
-
-
-  const target=
-    board.findIndex(
-      x=>x.type==="target"
-    );
-
-
-  const queue=[start];
-
-  const visited=new Set();
-
-  visited.add(start);
-
-
-  const parent={};
-
-
-  const dirs=[
-
-    [-1,0],
-
-    [0,1],
-
-    [1,0],
-
-    [0,-1]
-
-  ];
-
-
-  while(queue.length>0){
-
-    const current=queue.shift();
-
-
-    if(current===target){
-
-      const path=[];
-
-      let p=current;
-
-
-      while(p!==undefined){
-
-        path.unshift(p);
-
-        p=parent[p];
-
-      }
-
-
-      return path;
-
-    }
-
-
-    const row=
-      Math.floor(current/5);
-
-
-    const col=
-      current%5;
-
-
-    const item=
-      board[current];
-
-
-    /* CLOSED VALVE */
-
-    if(
-      item.type==="valve" &&
-      !item.open
-    ){
-
-      continue;
-
-    }
-
-
-    const con=
-      connections(
-        item.type,
-        item.rotation
-      );
-
-
-    for(let d=0;d<4;d++){
-
-      if(!con[d]) continue;
-
-
-      const nr=
-        row+dirs[d][0];
-
-
-      const nc=
-        col+dirs[d][1];
-
-
-      if(
-        nr<0 ||
-        nr>=5 ||
-        nc<0 ||
-        nc>=5
-      ){
-
-        continue;
-
-      }
-
-
-      const next=
-        nr*5+nc;
-
-
-      if(visited.has(next))
-        continue;
-
-
-      const nextItem=
-        board[next];
-
-
-      if(!nextItem.type)
-        continue;
-
-
-      if(
-        nextItem.type==="valve" &&
-        !nextItem.open
-      ){
-
-        continue;
-
-      }
-
-
-      const opposite=
-        (d+2)%4;
-
-
-      const nextCon=
-        connections(
-          nextItem.type,
-          nextItem.rotation
+        /*
+        CLICK
+        */
+
+        cell.addEventListener(
+            "click",
+            ()=>{
+                rotatePipe(index);
+            }
         );
 
 
-      if(!nextCon[opposite])
-        continue;
+        game.appendChild(cell);
 
-
-      visited.add(next);
-
-      parent[next]=current;
-
-      queue.push(next);
-
-    }
-
-  }
-
-
-  return null;
+    });
 
 }
 
 
-/* =====================================
-   CHECK
-===================================== */
+/*
+========================================
+ROTATE
+========================================
+*/
+
+function rotatePipe(index){
+
+    if(finished)
+        return;
+
+
+    const item =
+        board[index];
+
+
+    if(
+        item.type !== "straight" &&
+        item.type !== "corner"
+    ){
+
+        return;
+
+    }
+
+
+    item.rotation =
+        (item.rotation + 1) % 4;
+
+
+    moves++;
+
+
+    document.getElementById("moves")
+        .textContent = moves;
+
+
+    drawBoard();
+
+
+    checkPath();
+
+}
+
+
+/*
+========================================
+FIND PATH
+========================================
+*/
+
+function findPath(){
+
+    const start =
+        board.findIndex(
+            item => item.type === "source"
+        );
+
+
+    const target =
+        board.findIndex(
+            item => item.type === "target"
+        );
+
+
+    const queue = [start];
+
+    const visited =
+        new Set([start]);
+
+
+    const parent = {};
+
+
+    const directions = [
+
+        [-1,0], // NORTH
+
+        [0,1],  // EAST
+
+        [1,0],  // SOUTH
+
+        [0,-1]  // WEST
+
+    ];
+
+
+    while(queue.length > 0){
+
+        const current =
+            queue.shift();
+
+
+        if(current === target){
+
+            const path = [];
+
+            let p = current;
+
+
+            while(p !== undefined){
+
+                path.unshift(p);
+
+                p = parent[p];
+
+            }
+
+
+            return path;
+
+        }
+
+
+        const row =
+            Math.floor(current / 5);
+
+        const col =
+            current % 5;
+
+
+        const item =
+            board[current];
+
+
+        const connections =
+            getConnections(
+                item.type,
+                item.rotation
+            );
+
+
+        for(
+            let d=0;
+            d<4;
+            d++
+        ){
+
+            if(!connections[d])
+                continue;
+
+
+            const newRow =
+                row + directions[d][0];
+
+            const newCol =
+                col + directions[d][1];
+
+
+            if(
+                newRow < 0 ||
+                newRow >= 5 ||
+                newCol < 0 ||
+                newCol >= 5
+            ){
+
+                continue;
+
+            }
+
+
+            const next =
+                newRow * 5 + newCol;
+
+
+            if(visited.has(next))
+                continue;
+
+
+            const nextItem =
+                board[next];
+
+
+            if(
+                !nextItem ||
+                nextItem.type === "empty"
+            ){
+
+                continue;
+
+            }
+
+
+            const opposite =
+                (d + 2) % 4;
+
+
+            const nextConnections =
+                getConnections(
+                    nextItem.type,
+                    nextItem.rotation
+                );
+
+
+            if(!nextConnections[opposite])
+                continue;
+
+
+            visited.add(next);
+
+            parent[next] = current;
+
+            queue.push(next);
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/*
+========================================
+CHECK PATH
+========================================
+*/
 
 function checkPath(){
 
-  const path=findPath();
+    const path =
+        findPath();
 
 
-  if(!path)
-    return;
+    if(!path)
+        return;
 
 
-  completed=true;
+    finished = true;
 
-  animateWater(path);
+
+    animateWater(path);
 
 }
 
 
-/* =====================================
-   WATER ANIMATION
-===================================== */
+/*
+========================================
+WATER ANIMATION
+========================================
+*/
 
 function animateWater(path){
 
-  const cells=
-    document.querySelectorAll(".cell");
+    const cells =
+        document.querySelectorAll(".cell");
 
 
-  let i=0;
+    let index = 0;
 
 
-  function step(){
+    function next(){
 
-    if(i>=path.length){
+        if(index >= path.length){
 
-      setTimeout(
-        levelComplete,
-        500
-      );
+            setTimeout(
+                levelComplete,
+                500
+            );
 
-      return;
+            return;
+
+        }
+
+
+        const cell =
+            cells[path[index]];
+
+
+        const water =
+            document.createElement("div");
+
+
+        water.className =
+            "water";
+
+
+        cell.appendChild(water);
+
+
+        index++;
+
+
+        setTimeout(
+            next,
+            220
+        );
 
     }
 
 
-    const cell=
-      cells[path[i]];
-
-
-    const water=
-      document.createElement("div");
-
-
-    water.className="water";
-
-
-    cell.appendChild(water);
-
-
-    i++;
-
-
-    setTimeout(
-      step,
-      180
-    );
-
-  }
-
-
-  step();
+    next();
 
 }
 
 
-/* =====================================
-   COMPLETE
-===================================== */
+/*
+========================================
+LEVEL COMPLETE
+========================================
+*/
 
 function levelComplete(){
 
-  document.getElementById(
-    "message"
-  ).textContent=
-    "💦 Water reached the chamber!";
+    document.getElementById("message")
+        .textContent =
+        "💦 Water reached the chamber!";
 
 
-  calculateStars();
+    let stars = "★★★";
 
 
-  if(
-    currentLevel<
-    levels.length-1
-  ){
-
-    document.getElementById(
-      "nextBtn"
-    ).style.display=
-      "inline-block";
-
-  }else{
-
-    document.getElementById(
-      "message"
-    ).textContent=
-      "🎉 All available levels completed!";
-
-  }
-
-}
+    if(moves > 12)
+        stars = "★★☆";
 
 
-/* =====================================
-   STARS
-===================================== */
-
-function calculateStars(){
-
-  let result="★★★";
+    if(moves > 20)
+        stars = "★☆☆";
 
 
-  if(moves>14){
-
-    result="★★☆";
-
-  }
+    document.getElementById("stars")
+        .textContent = stars;
 
 
-  if(moves>22){
+    /*
+    NEXT BUTTON
+    */
 
-    result="★☆☆";
-
-  }
-
-
-  document.getElementById(
-    "stars"
-  ).textContent=result;
+    document.getElementById("next")
+        .style.display = "inline-block";
 
 }
 
 
-/* =====================================
-   INFO
-===================================== */
+/*
+========================================
+RESET
+========================================
+*/
 
-function updateInfo(){
+document.getElementById("reset")
+    .addEventListener(
+        "click",
+        ()=>{
 
-  document.getElementById(
-    "moves"
-  ).textContent=moves;
+            moves = 0;
 
-}
+            finished = false;
 
+            document.getElementById("moves")
+                .textContent = "0";
 
-/* =====================================
-   LOAD LEVEL
-===================================== */
+            document.getElementById("stars")
+                .textContent = "★★★";
 
-function loadLevel(number){
+            document.getElementById("message")
+                .textContent = "";
 
-  currentLevel=number;
-
-  moves=0;
-
-  completed=false;
-
-
-  document.getElementById(
-    "levelTitle"
-  ).textContent=
-    "Level "+(number+1);
+            document.getElementById("next")
+                .style.display = "none";
 
 
-  document.getElementById(
-    "message"
-  ).textContent="";
+            /*
+            RESET ORIGINAL BOARD
+            */
+
+            board =
+                level1.map(item=>({
+
+                    type:item.type,
+
+                    rotation:item.rotation
+
+                }));
 
 
-  document.getElementById(
-    "nextBtn"
-  ).style.display=
-    "none";
+            drawBoard();
+
+        }
+    );
 
 
-  document.getElementById(
-    "stars"
-  ).textContent=
-    "★★★";
+/*
+========================================
+START
+========================================
+*/
 
+board =
+    level1.map(item=>({
 
-  /*
-    Clone level so RESET
-    doesn't destroy original
-  */
+        type:item.type,
 
-  board=
-    levels[number].map(item=>({
-
-      type:item.type,
-
-      rotation:item.rotation,
-
-      open:item.open
+        rotation:item.rotation
 
     }));
 
 
-  updateInfo();
-
-  drawBoard();
-
-}
-
-
-/* =====================================
-   RESET
-===================================== */
-
-document.getElementById(
-  "resetBtn"
-).addEventListener(
-  "click",
-  ()=>{
-    loadLevel(currentLevel);
-  }
-);
-
-
-/* =====================================
-   NEXT LEVEL
-===================================== */
-
-document.getElementById(
-  "nextBtn"
-).addEventListener(
-  "click",
-  ()=>{
-
-    if(
-      currentLevel<
-      levels.length-1
-    ){
-
-      loadLevel(
-        currentLevel+1
-      );
-
-    }
-
-  }
-);
-
-
-/* =====================================
-   START
-===================================== */
-
-loadLevel(0);
+drawBoard();
 
 </script>
 
