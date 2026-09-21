@@ -62,35 +62,19 @@ h1{
     cursor:pointer;
 }
 
-/* =====================
-   SOURCE
-===================== */
-
 .source{
     font-size:34px;
 }
 
-/* =====================
-   TARGET
-===================== */
-
 .target{
     font-size:32px;
 }
-
-/* =====================
-   PIPE
-===================== */
 
 .pipe{
     width:72%;
     height:72%;
     position:relative;
 }
-
-/* =====================
-   STRAIGHT
-===================== */
 
 .straight:before{
     content:"";
@@ -112,10 +96,6 @@ h1{
     left:0;
     top:37.5%;
 }
-
-/* =====================
-   CORNER
-===================== */
 
 .corner:before,
 .corner:after{
@@ -189,10 +169,6 @@ h1{
     top:37.5%;
 }
 
-/* =====================
-   WATER
-===================== */
-
 .water{
     position:absolute;
 
@@ -200,17 +176,12 @@ h1{
     height:14px;
 
     background:#65e0ff;
-
     border-radius:50%;
 
     box-shadow:0 0 12px #65e0ff;
 
     z-index:10;
 }
-
-/* =====================
-   BUTTONS
-===================== */
 
 button{
     border:0;
@@ -222,6 +193,8 @@ button{
 
     font-size:17px;
     font-weight:bold;
+
+    cursor:pointer;
 }
 
 #reset{
@@ -232,7 +205,6 @@ button{
 #next{
     background:#19a974;
     color:white;
-
     display:none;
 }
 
@@ -252,7 +224,7 @@ button{
 
 <h1>💧 Water Runner</h1>
 
-<div class="level">
+<div class="level" id="levelTitle">
     Level 1
 </div>
 
@@ -269,7 +241,6 @@ button{
     </div>
 
 </div>
-
 
 <div id="game"></div>
 
@@ -302,97 +273,142 @@ DIRECTIONS
 ========================================
 LEVEL 1
 
-CORRECT PATH:
+CORRECT SOLUTION:
 
 💧 ─ ─ ┐
       │
       │
-└ ─ ─ ┘
-      │
-      😈
+┌ ─ ─ ┘
+│
+└ ─ ─ ─ 😈
+
+The initial pieces are rotated.
 ========================================
 */
 
-
-const level = [
+const level1 = [
 
     /* ROW 1 */
 
     {type:"source", rotation:0},
-
     {type:"straight", rotation:0},
-
-    {type:"corner", rotation:3},
-
+    {type:"corner", rotation:0},
     {type:"empty"},
-
     {type:"empty"},
 
 
     /* ROW 2 */
 
     {type:"empty"},
-
     {type:"empty"},
-
-    {type:"straight", rotation:1},
-
+    {type:"straight", rotation:0},
     {type:"empty"},
-
     {type:"empty"},
 
 
     /* ROW 3 */
 
     {type:"empty"},
-
     {type:"empty"},
-
     {type:"straight", rotation:0},
-
     {type:"empty"},
-
     {type:"empty"},
 
 
     /* ROW 4 */
 
-    {type:"corner", rotation:3},
-
-    {type:"straight", rotation:1},
-
     {type:"corner", rotation:0},
-
+    {type:"straight", rotation:1},
+    {type:"corner", rotation:0},
     {type:"empty"},
-
     {type:"empty"},
 
 
     /* ROW 5 */
 
-    {type:"target"},
-
-    {type:"empty"},
-
-    {type:"empty"},
-
-    {type:"empty"},
-
-    {type:"empty"}
+    {type:"straight", rotation:1},
+    {type:"straight", rotation:1},
+    {type:"straight", rotation:1},
+    {type:"straight", rotation:1},
+    {type:"target"}
 
 ];
 
 
 /*
 ========================================
-GAME
+LEVEL 2
+
+CORRECT SOLUTION:
+
+💧 ─ ─ ┐
+      │
+┌ ─ ─ ┘
+│
+└ ─ ─ ─ ─ 😈
+
+Different route from Level 1.
 ========================================
 */
 
+const level2 = [
+
+    /* ROW 1 */
+
+    {type:"source", rotation:0},
+    {type:"straight", rotation:0},
+    {type:"corner", rotation:0},
+    {type:"empty"},
+    {type:"empty"},
+
+
+    /* ROW 2 */
+
+    {type:"empty"},
+    {type:"empty"},
+    {type:"straight", rotation:0},
+    {type:"empty"},
+    {type:"empty"},
+
+
+    /* ROW 3 */
+
+    {type:"corner", rotation:0},
+    {type:"straight", rotation:1},
+    {type:"corner", rotation:0},
+    {type:"empty"},
+    {type:"empty"},
+
+
+    /* ROW 4 */
+
+    {type:"straight", rotation:0},
+    {type:"empty"},
+    {type:"empty"},
+    {type:"empty"},
+    {type:"empty"},
+
+
+    /* ROW 5 */
+
+    {type:"corner", rotation:0},
+    {type:"straight", rotation:1},
+    {type:"straight", rotation:1},
+    {type:"straight", rotation:1},
+    {type:"target"}
+
+];
+
+
+const levels = [
+    level1,
+    level2
+];
+
+
+let currentLevel = 0;
 let board = [];
-
 let moves = 0;
-
 let finished = false;
 
 
@@ -403,8 +419,6 @@ CONNECTIONS
 */
 
 function getConnections(type,rotation){
-
-    /* STRAIGHT */
 
     if(type === "straight"){
 
@@ -425,10 +439,9 @@ function getConnections(type,rotation){
             false,
             true
         ];
+
     }
 
-
-    /* CORNER */
 
     if(type === "corner"){
 
@@ -449,10 +462,9 @@ function getConnections(type,rotation){
         ];
 
         return shapes[rotation % 4];
+
     }
 
-
-    /* SOURCE */
 
     if(type === "source"){
 
@@ -462,19 +474,19 @@ function getConnections(type,rotation){
             false,
             false
         ];
+
     }
 
-
-    /* TARGET */
 
     if(type === "target"){
 
         return [
-            true,
             false,
             false,
-            false
+            false,
+            true
         ];
+
     }
 
 
@@ -484,12 +496,13 @@ function getConnections(type,rotation){
         false,
         false
     ];
+
 }
 
 
 /*
 ========================================
-DRAW
+DRAW BOARD
 ========================================
 */
 
@@ -498,7 +511,7 @@ function draw(){
     const game =
         document.getElementById("game");
 
-    game.innerHTML="";
+    game.innerHTML = "";
 
 
     board.forEach((item,index)=>{
@@ -506,37 +519,32 @@ function draw(){
         const cell =
             document.createElement("div");
 
-        cell.className="cell";
+        cell.className = "cell";
 
 
-        /* SOURCE */
+        if(item.type === "source"){
 
-        if(item.type==="source"){
-
-            cell.innerHTML=
+            cell.innerHTML =
                 '<div class="source">💧</div>';
 
         }
 
 
-        /* TARGET */
+        else if(item.type === "target"){
 
-        else if(item.type==="target"){
-
-            cell.innerHTML=
+            cell.innerHTML =
                 '<div class="target">😈</div>';
 
         }
 
 
-        /* STRAIGHT */
+        else if(item.type === "straight"){
 
-        else if(item.type==="straight"){
-
-            const pipe=
+            const pipe =
                 document.createElement("div");
 
-            pipe.className="pipe straight";
+            pipe.className =
+                "pipe straight";
 
 
             if(item.rotation % 2 === 0){
@@ -555,17 +563,16 @@ function draw(){
         }
 
 
-        /* CORNER */
+        else if(item.type === "corner"){
 
-        else if(item.type==="corner"){
-
-            const pipe=
+            const pipe =
                 document.createElement("div");
 
-            pipe.className="pipe corner";
+            pipe.className =
+                "pipe corner";
 
 
-            const names=[
+            const names = [
                 "ne",
                 "se",
                 "sw",
@@ -574,7 +581,7 @@ function draw(){
 
 
             pipe.classList.add(
-                names[item.rotation]
+                names[item.rotation % 4]
             );
 
 
@@ -583,9 +590,7 @@ function draw(){
         }
 
 
-        /* CLICK */
-
-        cell.onclick=function(){
+        cell.onclick = function(){
 
             rotate(index);
 
@@ -601,7 +606,7 @@ function draw(){
 
 /*
 ========================================
-ROTATE
+ROTATE PIPE
 ========================================
 */
 
@@ -611,12 +616,12 @@ function rotate(index){
         return;
 
 
-    const item=board[index];
+    const item = board[index];
 
 
     if(
-        item.type!=="straight" &&
-        item.type!=="corner"
+        item.type !== "straight" &&
+        item.type !== "corner"
     ){
 
         return;
@@ -624,19 +629,18 @@ function rotate(index){
     }
 
 
-    item.rotation=
-        (item.rotation+1)%4;
+    item.rotation =
+        (item.rotation + 1) % 4;
 
 
     moves++;
 
 
     document.getElementById("moves")
-        .textContent=moves;
+        .textContent = moves;
 
 
     draw();
-
 
     check();
 
@@ -645,41 +649,38 @@ function rotate(index){
 
 /*
 ========================================
-PATH FINDER
+FIND PATH
 ========================================
 */
 
 function findPath(){
 
-    const start=
+    const start =
         board.findIndex(
-            x=>x.type==="source"
+            x => x.type === "source"
         );
 
 
-    const target=
+    const target =
         board.findIndex(
-            x=>x.type==="target"
+            x => x.type === "target"
         );
 
 
-    const queue=[start];
+    const queue = [start];
 
-    const visited=
+    const visited =
         new Set([start]);
 
 
-    const parent={};
+    const parent = {};
 
 
-    const directions=[
+    const directions = [
 
         [-1,0],
-
         [0,1],
-
         [1,0],
-
         [0,-1]
 
     ];
@@ -687,22 +688,22 @@ function findPath(){
 
     while(queue.length){
 
-        const current=
+        const current =
             queue.shift();
 
 
-        if(current===target){
+        if(current === target){
 
-            const path=[];
+            const path = [];
 
-            let p=current;
+            let p = current;
 
 
-            while(p!==undefined){
+            while(p !== undefined){
 
                 path.unshift(p);
 
-                p=parent[p];
+                p = parent[p];
 
             }
 
@@ -712,70 +713,76 @@ function findPath(){
         }
 
 
-        const row=
-            Math.floor(current/5);
+        const row =
+            Math.floor(current / 5);
 
-        const col=
-            current%5;
+        const col =
+            current % 5;
 
 
-        const item=
+        const item =
             board[current];
 
 
-        const con=
+        const con =
             getConnections(
                 item.type,
                 item.rotation
             );
 
 
-        for(let d=0;d<4;d++){
+        for(let d=0; d<4; d++){
 
             if(!con[d])
                 continue;
 
 
-            const nr=
-                row+directions[d][0];
+            const nr =
+                row + directions[d][0];
 
-            const nc=
-                col+directions[d][1];
+            const nc =
+                col + directions[d][1];
 
 
             if(
-                nr<0 ||
-                nr>=5 ||
-                nc<0 ||
-                nc>=5
-            )
+                nr < 0 ||
+                nr >= 5 ||
+                nc < 0 ||
+                nc >= 5
+            ){
+
                 continue;
 
+            }
 
-            const next=
-                nr*5+nc;
+
+            const next =
+                nr * 5 + nc;
 
 
             if(visited.has(next))
                 continue;
 
 
-            const nextItem=
+            const nextItem =
                 board[next];
 
 
             if(
                 !nextItem ||
-                nextItem.type==="empty"
-            )
+                nextItem.type === "empty"
+            ){
+
                 continue;
 
-
-            const opposite=
-                (d+2)%4;
+            }
 
 
-            const nextCon=
+            const opposite =
+                (d + 2) % 4;
+
+
+            const nextCon =
                 getConnections(
                     nextItem.type,
                     nextItem.rotation
@@ -788,7 +795,7 @@ function findPath(){
 
             visited.add(next);
 
-            parent[next]=current;
+            parent[next] = current;
 
             queue.push(next);
 
@@ -804,21 +811,20 @@ function findPath(){
 
 /*
 ========================================
-CHECK
+CHECK PATH
 ========================================
 */
 
 function check(){
 
-    const path=findPath();
+    const path = findPath();
 
 
     if(!path)
         return;
 
 
-    finished=true;
-
+    finished = true;
 
     animate(path);
 
@@ -827,22 +833,22 @@ function check(){
 
 /*
 ========================================
-WATER
+WATER ANIMATION
 ========================================
 */
 
 function animate(path){
 
-    const cells=
+    const cells =
         document.querySelectorAll(".cell");
 
 
-    let i=0;
+    let i = 0;
 
 
     function step(){
 
-        if(i>=path.length){
+        if(i >= path.length){
 
             setTimeout(
                 complete,
@@ -854,11 +860,10 @@ function animate(path){
         }
 
 
-        const water=
+        const water =
             document.createElement("div");
 
-
-        water.className="water";
+        water.className = "water";
 
 
         cells[path[i]]
@@ -883,34 +888,41 @@ function animate(path){
 
 /*
 ========================================
-COMPLETE
+LEVEL COMPLETE
 ========================================
 */
 
 function complete(){
 
     document.getElementById("message")
-        .textContent=
+        .textContent =
         "💦 Water reached the chamber!";
 
 
-    let stars="★★★";
+    let stars = "★★★";
 
 
-    if(moves>12)
-        stars="★★☆";
+    if(moves > 12)
+        stars = "★★☆";
 
 
-    if(moves>20)
-        stars="★☆☆";
+    if(moves > 20)
+        stars = "★☆☆";
 
 
     document.getElementById("stars")
-        .textContent=stars;
+        .textContent = stars;
 
 
-    document.getElementById("next")
-        .style.display="inline-block";
+    if(
+        currentLevel <
+        levels.length - 1
+    ){
+
+        document.getElementById("next")
+            .style.display = "inline-block";
+
+    }
 
 }
 
@@ -922,42 +934,86 @@ RESET
 */
 
 document.getElementById("reset")
-    .onclick=function(){
+    .onclick = function(){
 
-        moves=0;
-
-        finished=false;
-
-
-        document.getElementById("moves")
-            .textContent="0";
-
-
-        document.getElementById("stars")
-            .textContent="★★★";
-
-
-        document.getElementById("message")
-            .textContent="";
-
-
-        document.getElementById("next")
-            .style.display="none";
-
-
-        board=
-            level.map(item=>({
-
-                type:item.type,
-
-                rotation:item.rotation
-
-            }));
-
-
-        draw();
+        loadLevel(currentLevel);
 
     };
+
+
+/*
+========================================
+NEXT LEVEL
+========================================
+*/
+
+document.getElementById("next")
+    .onclick = function(){
+
+        if(
+            currentLevel <
+            levels.length - 1
+        ){
+
+            loadLevel(
+                currentLevel + 1
+            );
+
+        }
+
+    };
+
+
+/*
+========================================
+LOAD LEVEL
+========================================
+*/
+
+function loadLevel(number){
+
+    currentLevel = number;
+
+    moves = 0;
+
+    finished = false;
+
+
+    document.getElementById("levelTitle")
+        .textContent =
+        "Level " + (number + 1);
+
+
+    document.getElementById("moves")
+        .textContent = "0";
+
+
+    document.getElementById("stars")
+        .textContent = "★★★";
+
+
+    document.getElementById("message")
+        .textContent = "";
+
+
+    document.getElementById("next")
+        .style.display = "none";
+
+
+    board =
+        levels[number].map(item => ({
+
+            type:item.type,
+
+            rotation:
+                item.rotation || 0
+
+        }));
+
+
+    draw();
+
+}
 
 
 /*
@@ -966,17 +1022,7 @@ START
 ========================================
 */
 
-board=
-    level.map(item=>({
-
-        type:item.type,
-
-        rotation:item.rotation
-
-    }));
-
-
-draw();
+loadLevel(0);
 
 </script>
 
