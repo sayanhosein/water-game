@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Water Runner</title>
 
 <style>
-
 *{
     box-sizing:border-box;
 }
@@ -27,7 +25,7 @@ h1{
 
 .level{
     color:#65cfff;
-    font-size:21px;
+    font-size:22px;
     margin-bottom:12px;
 }
 
@@ -35,15 +33,14 @@ h1{
     display:flex;
     justify-content:center;
     gap:35px;
-    font-size:18px;
-    margin-bottom:15px;
+    font-size:20px;
+    margin-bottom:16px;
 }
 
 #game{
     width:360px;
     max-width:94vw;
     margin:auto;
-
     display:grid;
     grid-template-columns:repeat(5,1fr);
     gap:6px;
@@ -53,21 +50,19 @@ h1{
     aspect-ratio:1;
     background:#1d293b;
     border-radius:10px;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     position:relative;
     cursor:pointer;
 }
 
 .source{
-    font-size:34px;
+    font-size:36px;
 }
 
 .target{
-    font-size:32px;
+    font-size:34px;
 }
 
 .pipe{
@@ -76,124 +71,115 @@ h1{
     position:relative;
 }
 
-.straight:before{
+.pipe::before,
+.pipe::after{
     content:"";
     position:absolute;
     background:#59caff;
-    border-radius:8px;
+    border-radius:10px;
 }
 
-.straight.vertical:before{
+/* STRAIGHT */
+
+.straight.vertical::before{
     width:25%;
     height:100%;
     left:37.5%;
     top:0;
 }
 
-.straight.horizontal:before{
+.straight.horizontal::before{
     width:100%;
     height:25%;
     left:0;
     top:37.5%;
 }
 
-.corner:before,
-.corner:after{
-    content:"";
-    position:absolute;
-    background:#59caff;
-    border-radius:8px;
-}
+/* CORNER NE */
 
-/* NE */
-
-.corner.ne:before{
+.corner.ne::before{
     width:25%;
     height:75%;
     left:37.5%;
     top:0;
 }
 
-.corner.ne:after{
+.corner.ne::after{
     width:75%;
     height:25%;
     left:25%;
     top:37.5%;
 }
 
-/* SE */
+/* CORNER SE */
 
-.corner.se:before{
+.corner.se::before{
     width:25%;
     height:75%;
     left:37.5%;
     top:25%;
 }
 
-.corner.se:after{
+.corner.se::after{
     width:75%;
     height:25%;
     left:25%;
     top:37.5%;
 }
 
-/* SW */
+/* CORNER SW */
 
-.corner.sw:before{
+.corner.sw::before{
     width:25%;
     height:75%;
     left:37.5%;
     top:25%;
 }
 
-.corner.sw:after{
+.corner.sw::after{
     width:75%;
     height:25%;
     left:0;
     top:37.5%;
 }
 
-/* NW */
+/* CORNER NW */
 
-.corner.nw:before{
+.corner.nw::before{
     width:25%;
     height:75%;
     left:37.5%;
     top:0;
 }
 
-.corner.nw:after{
+.corner.nw::after{
     width:75%;
     height:25%;
     left:0;
     top:37.5%;
 }
+
+/* WATER */
 
 .water{
     position:absolute;
-
-    width:14px;
-    height:14px;
-
-    background:#65e0ff;
+    width:15px;
+    height:15px;
     border-radius:50%;
-
-    box-shadow:0 0 12px #65e0ff;
-
-    z-index:10;
+    background:#65e0ff;
+    box-shadow:0 0 14px #65e0ff;
+    z-index:20;
 }
+
+/* BUTTONS */
 
 button{
     border:0;
-    border-radius:10px;
-
-    padding:13px 28px;
-
-    margin:18px 5px;
-
-    font-size:17px;
+    border-radius:12px;
+    padding:14px 30px;
+    margin:20px 5px;
+    font-size:18px;
     font-weight:bold;
-
     cursor:pointer;
 }
 
@@ -210,15 +196,12 @@ button{
 
 #message{
     min-height:30px;
-    margin-top:10px;
-
+    margin-top:8px;
     font-size:18px;
     font-weight:bold;
 }
-
 </style>
 </head>
-
 
 <body>
 
@@ -229,70 +212,55 @@ button{
 </div>
 
 <div class="info">
-
     <div>
-        Moves:
-        <span id="moves">0</span>
+        Moves: <span id="moves">0</span>
     </div>
 
     <div>
-        Stars:
-        <span id="stars">★★★</span>
+        Stars: <span id="stars">★★★</span>
     </div>
-
 </div>
 
 <div id="game"></div>
 
 <div id="message"></div>
 
-<button id="reset">
-    RESET
-</button>
+<button id="reset">RESET</button>
 
-<button id="next">
-    NEXT LEVEL
-</button>
+<button id="next">NEXT LEVEL</button>
 
 
 <script>
 
-/*
-========================================
-DIRECTIONS
+/* =====================================
+   DIRECTIONS
 
-0 = NORTH
-1 = EAST
-2 = SOUTH
-3 = WEST
-========================================
-*/
+   0 = NORTH
+   1 = EAST
+   2 = SOUTH
+   3 = WEST
+===================================== */
 
 
-/*
-========================================
-LEVEL 1
+/* =====================================
+   LEVEL 1
 
-CORRECT SOLUTION:
+   FINAL PATH:
 
-💧 ─ ─ ┐
-      │
-      │
-┌ ─ ─ ┘
-│
-└ ─ ─ ─ 😈
-
-The initial pieces are rotated.
-========================================
-*/
+   💧 ─ ─ ┐
+         │
+         │
+   ┌ ─ ─ ┘
+   │ 😈
+===================================== */
 
 const level1 = [
 
     /* ROW 1 */
 
-    {type:"source", rotation:0},
-    {type:"straight", rotation:0},
-    {type:"corner", rotation:0},
+    {type:"source",  rotation:0},
+    {type:"straight",rotation:0},
+    {type:"corner",  rotation:0},
     {type:"empty"},
     {type:"empty"},
 
@@ -301,7 +269,7 @@ const level1 = [
 
     {type:"empty"},
     {type:"empty"},
-    {type:"straight", rotation:0},
+    {type:"straight",rotation:1},
     {type:"empty"},
     {type:"empty"},
 
@@ -310,54 +278,43 @@ const level1 = [
 
     {type:"empty"},
     {type:"empty"},
-    {type:"straight", rotation:0},
+    {type:"straight",rotation:1},
     {type:"empty"},
     {type:"empty"},
 
 
     /* ROW 4 */
 
-    {type:"corner", rotation:0},
-    {type:"straight", rotation:1},
-    {type:"corner", rotation:0},
+    {type:"corner",  rotation:3},
+    {type:"straight",rotation:0},
+    {type:"corner",  rotation:0},
     {type:"empty"},
     {type:"empty"},
 
 
     /* ROW 5 */
 
-    {type:"straight", rotation:1},
-    {type:"straight", rotation:1},
-    {type:"straight", rotation:1},
-    {type:"straight", rotation:1},
-    {type:"target"}
-
+    {type:"straight",rotation:1},
+    {type:"target",rotation:0},
+    {type:"empty"},
+    {type:"empty"},
+    {type:"empty"}
 ];
 
 
-/*
-========================================
-LEVEL 2
+/* =====================================
+   LEVEL 2
 
-CORRECT SOLUTION:
-
-💧 ─ ─ ┐
-      │
-┌ ─ ─ ┘
-│
-└ ─ ─ ─ ─ 😈
-
-Different route from Level 1.
-========================================
-*/
+   مسیر دوم
+===================================== */
 
 const level2 = [
 
     /* ROW 1 */
 
-    {type:"source", rotation:0},
-    {type:"straight", rotation:0},
-    {type:"corner", rotation:0},
+    {type:"source",rotation:0},
+    {type:"straight",rotation:0},
+    {type:"corner",rotation:0},
     {type:"empty"},
     {type:"empty"},
 
@@ -366,37 +323,36 @@ const level2 = [
 
     {type:"empty"},
     {type:"empty"},
-    {type:"straight", rotation:0},
+    {type:"straight",rotation:1},
     {type:"empty"},
     {type:"empty"},
 
 
     /* ROW 3 */
 
-    {type:"corner", rotation:0},
-    {type:"straight", rotation:1},
-    {type:"corner", rotation:0},
     {type:"empty"},
+    {type:"empty"},
+    {type:"corner",rotation:0},
+    {type:"straight",rotation:0},
     {type:"empty"},
 
 
     /* ROW 4 */
 
-    {type:"straight", rotation:0},
     {type:"empty"},
     {type:"empty"},
     {type:"empty"},
+    {type:"corner",rotation:0},
     {type:"empty"},
 
 
     /* ROW 5 */
 
-    {type:"corner", rotation:0},
-    {type:"straight", rotation:1},
-    {type:"straight", rotation:1},
-    {type:"straight", rotation:1},
-    {type:"target"}
-
+    {type:"empty"},
+    {type:"empty"},
+    {type:"empty"},
+    {type:"straight",rotation:0},
+    {type:"target",rotation:0}
 ];
 
 
@@ -412,34 +368,33 @@ let moves = 0;
 let finished = false;
 
 
-/*
-========================================
-CONNECTIONS
-========================================
-*/
+/* =====================================
+   CONNECTION LOGIC
+===================================== */
 
-function getConnections(type,rotation){
+function getConnections(type, rotation){
 
     if(type === "straight"){
 
         if(rotation % 2 === 0){
 
             return [
-                true,
+                true,   // NORTH
+                false,  // EAST
+                true,   // SOUTH
+                false   // WEST
+            ];
+
+        }else{
+
+            return [
                 false,
                 true,
-                false
+                false,
+                true
             ];
 
         }
-
-        return [
-            false,
-            true,
-            false,
-            true
-        ];
-
     }
 
 
@@ -447,26 +402,27 @@ function getConnections(type,rotation){
 
         const shapes = [
 
-            /* 0 = NE */
+            /* 0 = NORTH + EAST */
             [true,true,false,false],
 
-            /* 1 = SE */
+            /* 1 = EAST + SOUTH */
             [false,true,true,false],
 
-            /* 2 = SW */
+            /* 2 = SOUTH + WEST */
             [false,false,true,true],
 
-            /* 3 = NW */
+            /* 3 = WEST + NORTH */
             [true,false,false,true]
 
         ];
 
         return shapes[rotation % 4];
-
     }
 
 
     if(type === "source"){
+
+        /* Water leaves source to the EAST */
 
         return [
             false,
@@ -474,11 +430,12 @@ function getConnections(type,rotation){
             false,
             false
         ];
-
     }
 
 
     if(type === "target"){
+
+        /* Target receives water from WEST */
 
         return [
             false,
@@ -486,7 +443,6 @@ function getConnections(type,rotation){
             false,
             true
         ];
-
     }
 
 
@@ -496,28 +452,23 @@ function getConnections(type,rotation){
         false,
         false
     ];
-
 }
 
 
-/*
-========================================
-DRAW BOARD
-========================================
-*/
+/* =====================================
+   DRAW
+===================================== */
 
 function draw(){
 
-    const game =
-        document.getElementById("game");
+    const game = document.getElementById("game");
 
     game.innerHTML = "";
 
 
     board.forEach((item,index)=>{
 
-        const cell =
-            document.createElement("div");
+        const cell = document.createElement("div");
 
         cell.className = "cell";
 
@@ -543,8 +494,7 @@ function draw(){
             const pipe =
                 document.createElement("div");
 
-            pipe.className =
-                "pipe straight";
+            pipe.className = "pipe straight";
 
 
             if(item.rotation % 2 === 0){
@@ -559,7 +509,6 @@ function draw(){
 
 
             cell.appendChild(pipe);
-
         }
 
 
@@ -568,8 +517,7 @@ function draw(){
             const pipe =
                 document.createElement("div");
 
-            pipe.className =
-                "pipe corner";
+            pipe.className = "pipe corner";
 
 
             const names = [
@@ -586,7 +534,6 @@ function draw(){
 
 
             cell.appendChild(pipe);
-
         }
 
 
@@ -600,15 +547,12 @@ function draw(){
         game.appendChild(cell);
 
     });
-
 }
 
 
-/*
-========================================
-ROTATE PIPE
-========================================
-*/
+/* =====================================
+   ROTATE
+===================================== */
 
 function rotate(index){
 
@@ -625,7 +569,6 @@ function rotate(index){
     ){
 
         return;
-
     }
 
 
@@ -643,27 +586,24 @@ function rotate(index){
     draw();
 
     check();
-
 }
 
 
-/*
-========================================
-FIND PATH
-========================================
-*/
+/* =====================================
+   FIND PATH
+===================================== */
 
 function findPath(){
 
     const start =
         board.findIndex(
-            x => x.type === "source"
+            item => item.type === "source"
         );
 
 
     const target =
         board.findIndex(
-            x => x.type === "target"
+            item => item.type === "target"
         );
 
 
@@ -678,15 +618,15 @@ function findPath(){
 
     const directions = [
 
-        [-1,0],
-        [0,1],
-        [1,0],
-        [0,-1]
+        [-1,0],  // NORTH
+        [0,1],    // EAST
+        [1,0],    // SOUTH
+        [0,-1]    // WEST
 
     ];
 
 
-    while(queue.length){
+    while(queue.length > 0){
 
         const current =
             queue.shift();
@@ -709,7 +649,6 @@ function findPath(){
 
 
             return path;
-
         }
 
 
@@ -720,44 +659,43 @@ function findPath(){
             current % 5;
 
 
-        const item =
+        const currentItem =
             board[current];
 
 
-        const con =
+        const connections =
             getConnections(
-                item.type,
-                item.rotation
+                currentItem.type,
+                currentItem.rotation
             );
 
 
         for(let d=0; d<4; d++){
 
-            if(!con[d])
+            if(!connections[d])
                 continue;
 
 
-            const nr =
+            const nextRow =
                 row + directions[d][0];
 
-            const nc =
+            const nextCol =
                 col + directions[d][1];
 
 
             if(
-                nr < 0 ||
-                nr >= 5 ||
-                nc < 0 ||
-                nc >= 5
+                nextRow < 0 ||
+                nextRow >= 5 ||
+                nextCol < 0 ||
+                nextCol >= 5
             ){
 
                 continue;
-
             }
 
 
             const next =
-                nr * 5 + nc;
+                nextRow * 5 + nextCol;
 
 
             if(visited.has(next))
@@ -774,7 +712,6 @@ function findPath(){
             ){
 
                 continue;
-
             }
 
 
@@ -782,14 +719,14 @@ function findPath(){
                 (d + 2) % 4;
 
 
-            const nextCon =
+            const nextConnections =
                 getConnections(
                     nextItem.type,
                     nextItem.rotation
                 );
 
 
-            if(!nextCon[opposite])
+            if(!nextConnections[opposite])
                 continue;
 
 
@@ -798,22 +735,17 @@ function findPath(){
             parent[next] = current;
 
             queue.push(next);
-
         }
-
     }
 
 
     return null;
-
 }
 
 
-/*
-========================================
-CHECK PATH
-========================================
-*/
+/* =====================================
+   CHECK
+===================================== */
 
 function check(){
 
@@ -826,18 +758,15 @@ function check(){
 
     finished = true;
 
-    animate(path);
-
+    animateWater(path);
 }
 
 
-/*
-========================================
-WATER ANIMATION
-========================================
-*/
+/* =====================================
+   WATER ANIMATION
+===================================== */
 
-function animate(path){
+function animateWater(path){
 
     const cells =
         document.querySelectorAll(".cell");
@@ -846,53 +775,48 @@ function animate(path){
     let i = 0;
 
 
-    function step(){
+    function moveWater(){
 
         if(i >= path.length){
 
             setTimeout(
-                complete,
-                400
+                completeLevel,
+                500
             );
 
             return;
-
         }
 
 
-        const water =
+        const drop =
             document.createElement("div");
 
-        water.className = "water";
+        drop.className = "water";
 
 
         cells[path[i]]
-            .appendChild(water);
+            .appendChild(drop);
 
 
         i++;
 
 
         setTimeout(
-            step,
-            200
+            moveWater,
+            250
         );
-
     }
 
 
-    step();
-
+    moveWater();
 }
 
 
-/*
-========================================
-LEVEL COMPLETE
-========================================
-*/
+/* =====================================
+   COMPLETE LEVEL
+===================================== */
 
-function complete(){
+function completeLevel(){
 
     document.getElementById("message")
         .textContent =
@@ -902,11 +826,11 @@ function complete(){
     let stars = "★★★";
 
 
-    if(moves > 12)
+    if(moves > 15)
         stars = "★★☆";
 
 
-    if(moves > 20)
+    if(moves > 25)
         stars = "★☆☆";
 
 
@@ -914,24 +838,17 @@ function complete(){
         .textContent = stars;
 
 
-    if(
-        currentLevel <
-        levels.length - 1
-    ){
+    if(currentLevel < levels.length - 1){
 
         document.getElementById("next")
             .style.display = "inline-block";
-
     }
-
 }
 
 
-/*
-========================================
-RESET
-========================================
-*/
+/* =====================================
+   RESET
+===================================== */
 
 document.getElementById("reset")
     .onclick = function(){
@@ -941,34 +858,24 @@ document.getElementById("reset")
     };
 
 
-/*
-========================================
-NEXT LEVEL
-========================================
-*/
+/* =====================================
+   NEXT LEVEL
+===================================== */
 
 document.getElementById("next")
     .onclick = function(){
 
-        if(
-            currentLevel <
-            levels.length - 1
-        ){
+        if(currentLevel < levels.length - 1){
 
-            loadLevel(
-                currentLevel + 1
-            );
+            loadLevel(currentLevel + 1);
 
         }
-
     };
 
 
-/*
-========================================
-LOAD LEVEL
-========================================
-*/
+/* =====================================
+   LOAD LEVEL
+===================================== */
 
 function loadLevel(number){
 
@@ -1012,15 +919,12 @@ function loadLevel(number){
 
 
     draw();
-
 }
 
 
-/*
-========================================
-START
-========================================
-*/
+/* =====================================
+   START
+===================================== */
 
 loadLevel(0);
 
